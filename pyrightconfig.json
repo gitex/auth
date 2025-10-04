@@ -1,0 +1,15 @@
+{
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "standard",
+  "executionEnvironments": [
+    {
+      "root": "./",
+      "extraPaths": [
+        "src",
+        "tests"
+      ]
+    }
+  ],
+  "reportUnknownMemberType": false,
+  "reportUnknownVariableType": false
+}
