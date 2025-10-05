@@ -3,7 +3,6 @@ from typing import Any, Self
 
 from src.domain.entities import PrivateClaims
 
-from .primitives import IdentifierStr
 from .value_objects import Timestamp
 
 
@@ -53,14 +52,16 @@ class RegisteredClaims:
     Именно поэтому они все указаны None.
     """
 
-    sub: IdentifierStr | None = None
+    sub: str | None = None
     iss: str | None = None
     aud: str | None = None
     exp: Timestamp | None = None
     nbf: Timestamp | None = None
     iat: Timestamp | None = None
-    jti: IdentifierStr | None = None
+    jti: str | None = None
 
 
 @dataclass
-class Claims(PrivateClaims, RegisteredClaims): ...
+class Claims(PrivateClaims, RegisteredClaims):
+    def as_dict(self) -> dict:
+        return asdict(self)

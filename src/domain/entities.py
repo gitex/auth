@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from uuid import UUID
 
-from domain.value_objects import Email, PasswordHash, Role
+from src.domain.value_objects import Email, PasswordHash, Role
 
 
 @dataclass
@@ -22,7 +22,7 @@ class PrivateClaims:
 
 @dataclass
 class Account:
-    id: UUID | None
+    identifier: UUID | None
     email: Email
     password_hash: PasswordHash
     is_active: bool = True

@@ -2,9 +2,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from src.config import settings
+from src.infra.config import settings
 
-from .api.router import router as auth_router
+from .api.login import router as auth_router
 
 
 @asynccontextmanager

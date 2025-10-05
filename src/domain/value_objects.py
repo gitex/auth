@@ -45,10 +45,16 @@ class RefreshFamilyId:
 class AccessToken:
     value: str
 
+    def __str__(self) -> str:
+        return str(self.value)
+
 
 @dataclass(frozen=True)
 class RefreshToken:
     value: str
+
+    def __str__(self) -> str:
+        return str(self.value)
 
 
 @dataclass(frozen=True)

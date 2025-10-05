@@ -4,7 +4,7 @@ from antidote import implements
 from jose import jwt
 
 from src.auth_types import Algorithm
-from src.claims import Claims
+from src.infra.claims.entities import Claims
 
 from .base import JwtCodec, Token
 

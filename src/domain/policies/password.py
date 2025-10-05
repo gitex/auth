@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum, auto
 
-from domain.value_objects import Password
+from src.domain.value_objects import Password
 
 
 class PasswordError(Enum):

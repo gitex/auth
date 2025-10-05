@@ -1,10 +1,9 @@
+from dataclasses import dataclass
 from datetime import timedelta
-from typing import final
 from uuid import uuid4
 
-from src.dto import JwtSpec
-
-from .entities import Claims, PrivateClaims
+from .entities import Claims
+from .policies import TokenPolicy
 from .value_objects import Timestamp
 
 
@@ -24,7 +23,7 @@ class ClaimFactory:
         return Timestamp.now()
 
 
-@final
+@dataclass
 class ClaimsFactory:
     """Фабрика для создания Claims.
 
@@ -32,49 +31,38 @@ class ClaimsFactory:
         jwt_spec: Общая спецификация для Jwt
     """
 
-    def __init__(self, jwt_spec: JwtSpec) -> None:
-        self.jwt_spec = jwt_spec
-        self._factory = ClaimFactory()
+    policy: TokenPolicy
+    claim_factory: ClaimFactory = ClaimFactory()
 
     def _base_claims(
         self, sub: str, ttl: timedelta, nbf: Timestamp | None = None
     ) -> Claims:
-        claims = Claims(sub=sub, jti=self._factory.jti())
+        claims = Claims(sub=sub, jti=self.claim_factory.jti())
 
-        iat = self._factory.iat()
+        iat = self.claim_factory.iat()
         claims.iat = iat
 
-        if iss := self.jwt_spec.iss:
+        if iss := self.policy.issuer:
             claims.iss = iss
 
-        if aud := self.jwt_spec.aud:
+        if aud := self.policy.audience:
             claims.aud = aud
 
         if nbf:
             claims.nbf = nbf
-            claims.exp = self._factory.exp(base=nbf, ttl=ttl)
+            claims.exp = self.claim_factory.exp(base=nbf, ttl=ttl)
         elif iat:
             claims.nbf = iat
-            claims.exp = self._factory.exp(base=iat, ttl=ttl)
+            claims.exp = self.claim_factory.exp(base=iat, ttl=ttl)
 
         return claims
 
-    def access_claims(
-        self,
-        sub: str,
-        nbf: Timestamp | None = None,
-        custom_claims: PrivateClaims | None = None,
-    ) -> Claims:
+    def access_claims(self, sub: str, nbf: Timestamp | None = None) -> Claims:
         """Claims для создания access token."""
 
-        claims = self._base_claims(sub, nbf=nbf, ttl=self.jwt_spec.access_ttl)
+        return self._base_claims(sub, nbf=nbf, ttl=self.policy.access_ttl)
 
-        if custom_claims:
-            claims = claims.update(custom_claims)
-
-        return claims
-
-    def refresh_claims(self, sub: str, nbf: int | None = None) -> Claims:
+    def refresh_claims(self, sub: str, nbf: Timestamp | None = None) -> Claims:
         """Claims для создания refresh token."""
 
-        return self._base_claims(sub, nbf=nbf, ttl=self.jwt_spec.refresh_ttl)
+        return self._base_claims(sub, nbf=nbf, ttl=self.policy.refresh_ttl)

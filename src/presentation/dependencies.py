@@ -1,18 +1,8 @@
-from datetime import timedelta
+from typing import Annotated
 
-from antidote import inject, lazy
+from fastapi import Depends
 
-from src.config import Settings
-from src.dto import JwtSpec
+from src.application.login import LoginHandler, get_login_handler
 
 
-@lazy
-def get_jwt_spec(settings: Settings = inject.me()) -> JwtSpec:
-    return JwtSpec(
-        alg=settings.jwt.alg,
-        secret=settings.jwt.secret_key,
-        iss=settings.jwt.iss,
-        aud=settings.jwt.aud,
-        access_ttl=timedelta(seconds=settings.jwt.access_ttl_seconds),
-        refresh_ttl=timedelta(seconds=settings.jwt.refresh_ttl_seconds),
-    )
+LoginHandlerDepend = Annotated[LoginHandler, Depends(get_login_handler)]
