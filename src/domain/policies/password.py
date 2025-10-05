@@ -35,7 +35,7 @@ class PasswordPolicy:
 
     expires_in: timedelta = timedelta(days=365)
 
-    def verify(self, password: Password) -> list[PasswordError]:
+    def validate(self, password: Password) -> list[PasswordError]:
         errors: list[PasswordError] = []
 
         n = len(password)

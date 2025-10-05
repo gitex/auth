@@ -1,22 +1,6 @@
 from dataclasses import dataclass
 
-from src.domain.value_objects import TTL, Email, Role, Scope
-
-
-@dataclass
-class Principal:
-    """Представление клиента.
-
-    Attributes:
-        sub: (subject) Идентификатор клиента
-        roles: Роли клиента
-        scopes: Права клиента
-    """
-
-    sub: str
-    email: Email
-    roles: set[Role]
-    scopes: set[Scope]
+from src.domain.value_objects import TTL
 
 
 @dataclass
@@ -29,7 +13,7 @@ class JwtSpec:
         aud: (Audience): для каких сервисов он валиден?
     """
 
-    alg: AlgorithmStr
+    alg: str
     secret: str
     iss: str
     aud: str

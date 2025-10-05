@@ -36,7 +36,8 @@ def test_jti_should_be_unique(claims_factory: ClaimsFactory, sub: str) -> None:
 
 
 def test_nbf_should_be_iat_when_not_declared(
-    claims_factory: ClaimsFactory, sub: str
+    claims_factory: ClaimsFactory,
+    sub: str,
 ) -> None:
     at = claims_factory.access_claims(sub)
     rt = claims_factory.refresh_claims(sub)

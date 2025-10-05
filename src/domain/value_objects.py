@@ -74,9 +74,15 @@ class PasswordHash:
 
 @dataclass(frozen=True)
 class Scope:
-    value: str
+    name: str
+
+    def __post_init__(self) -> None:
+        assert self.name and self.name.islower() and " " not in self.name
 
 
 @dataclass(frozen=True)
 class Role:
-    value: str
+    name: str
+
+    def __post_init__(self) -> None:
+        assert self.name and self.name.islower() and " " not in self.name

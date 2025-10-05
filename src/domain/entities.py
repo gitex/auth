@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from uuid import UUID
 
+from domain.value_objects import Email, PasswordHash, Role
+
 
 @dataclass
 class PrivateClaims:
@@ -20,8 +22,8 @@ class PrivateClaims:
 
 @dataclass
 class Account:
-    id: UUID
-    email: str
-    password_hash: str
+    id: UUID | None
+    email: Email
+    password_hash: PasswordHash
     is_active: bool = True
-    roles: list[str] = field(default_factory=list)
+    roles: list[Role] = field(default_factory=list)
