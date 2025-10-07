@@ -1,0 +1,64 @@
+services:
+  kafka:
+    container_name: "kafka"
+    image: bitnami/kafka:latest
+    env_file: .env
+    volumes:
+      - kafka-data:/bitnami/kafka
+    ports:
+      - 29092:29092
+      - 9092:9092
+    healthcheck:
+      test: kafka-topics.sh --list --bootstrap-server localhost:9092 || exit 1
+      interval: 10s
+      retries: 10
+      timeout: 5s
+    restart: always
+    profiles: ["dependency"]
+
+  redis:
+    container_name: auth-redis
+    image: redis:7
+    ports: ["6379:6379"]
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    profiles: ["dependency"]
+
+  db:
+    image: postgres:16
+    container_name: auth-db
+    env_file: .env
+    ports: ["5433:5432"]
+    volumes:
+      - pgdata-auth:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U postgres || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    profiles: ["dependency"]
+
+  auth:
+    image: market/auth
+    build:
+      context: .
+      network: host
+    container_name: auth
+    env_file: .env
+    volumes:
+      - ./services/auth:/app
+      - /app/.venv/ # Stops local .venv getting mounted
+    ports: ["8005:8080"]
+    restart: always
+    command: "fastapi dev src/main.py --host 0.0.0.0 --port 8000" # TODO: Подправить dev на изменяемую переменную (dev, run)
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+    profiles: ["service"]

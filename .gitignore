@@ -1,0 +1,90 @@
+# environment variables
+.env
+infra/env/.*.env
+!infra/env/example.*.env
+
+# build output
+services/core/dist/*
+
+# local pypi password file
+.htpasswd
+
+
+# --- Python bytecode / cache ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+.conda/
+.venv*/
+.python-version  # pyenv
+
+# --- Packages / build artifacts ---
+build/
+dist/
+sdist/
+wheels/
+*.egg-info/
+*.egg
+.eggs/
+pip-wheel-metadata/
+share/python-wheels/
+MANIFEST
+
+# --- Project-local packages (PEP 582 / PDM) ---
+__pypackages__/
+.pdm-python
+
+# --- Test / coverage / tooling caches ---
+.tox/
+.nox/
+.pytest_cache/
+.coverage*
+coverage.xml
+htmlcov/
+.hypothesis/
+.pyre/
+.pytype/
+.mypy_cache/
+.dmypy.json
+.ruff_cache/
+.pyrightcache/
+.cache/
+
+# --- Notebooks ---
+.ipynb_checkpoints/
+
+# --- Documentation (Sphinx / MkDocs) ---
+docs/_build/
+site/
+
+# --- Framework specifics ---
+# Django
+*.log
+db.sqlite3
+*.sqlite3
+media/
+staticfiles/
+# Flask
+instance/
+.webassets-cache/
+
+# --- C extensions / Cython ---
+*.so
+cython_debug/
+
+# --- Local environment / secrets (опционально, если используешь dotenv) ---
+.env
+.env.*
+!.env.example
+
+# --- Editors / OS junk (опционально) ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
