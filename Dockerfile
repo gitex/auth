@@ -90,5 +90,3 @@ COPY --from=builder /app/.venv /app/.venv
 # Add for security reasons
 # Need to replace because of https://pythonspeed.com/articles/root-capabilities-docker-security
 # USER $USERNAME
-
-

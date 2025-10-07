@@ -4,6 +4,8 @@ set shell := ["bash", "-euo", "pipefail", "-c"]
 
 init:
     cp --update=none env.example .env
+    uv run pre-commit install
+    uv run pre-commit install-hooks
 
 up profile='dependency':
     sudo docker compose --profile {{ profile }} up -d
@@ -16,5 +18,3 @@ ps:
 
 logs target:
     sudo docker logs -f {{ target }}
-
-

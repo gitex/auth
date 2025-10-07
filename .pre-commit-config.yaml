@@ -1,0 +1,86 @@
+default_stages: [pre-commit]
+
+exclude: ^(docs/|migrations/).*
+
+repos:
+  - repo: local
+    hooks:
+      - id: isort
+        name: isort (imports)
+        entry: uv run isort .
+        language: system
+        types: [python]
+        pass_filenames: true
+        stages: [pre-commit]
+
+      - id: ruff-format
+        name: ruff (format)
+        entry: uv run ruff format
+        language: system
+        types: [python]
+        pass_filenames: true
+        stages: [pre-commit]
+
+      - id: ruff-lint
+        name: ruff (lint)
+        entry: uv run ruff check
+        language: system
+        types: [python]
+        pass_filenames: true
+        stages: [pre-commit]
+
+      - id: mypy
+        name: mypy
+        entry: uv run mypy
+        language: system
+        types: [python]
+        pass_filenames: true
+        stages: [pre-push]
+        additional_dependencies: []
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
+      - id: check-merge-conflict
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.9.1
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+        args: ["check", "--commit-msg-file", ".git/COMMIT_EDITMSG"]
+
+  - repo: https://github.com/thlorenz/doctoc
+    rev: v2.2.0
+    hooks:
+      - id: doctoc
+        stages: [pre-push]
+        args: ["README.md"]
+
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+    - id: codespell
+      args: ["-I .codespellignore"]
+      additional_dependencies:
+        - tomli
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint
+        args: ["-shellcheck=auto"]
+        files: ^\.github/workflows/.*\.ya?ml$
+
+  # - repo: https://github.com/adrienverge/yamllint
+  #   rev: v1.37.1
+  #   hooks:
+  #     - id: yamllint
+  #       files: ^\.github/workflows/.*\.ya?ml$|docker-compose.yml
+  #       args: ["-d", "{extends: default, rules: {line-length: disable}}"]
