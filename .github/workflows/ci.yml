@@ -10,12 +10,31 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=12
+
     strategy:
       matrix:
         python-version: ["3.12"]
       fail-fast: true
+
     env:
       UV_PYTHON: ${{ matrix.python-version }}
+      DEBUG: true
+
     steps:
       - uses: actions/checkout@v4
 
@@ -35,6 +54,9 @@ jobs:
 
       - name: Pytest
         run: uv run pytest -q --maxfail=1 --disable-warnings --cov --cov-report=xml --timeout 15
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DEBUG: true
 
       - name: Upload coverage artifact
         if: always()
