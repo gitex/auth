@@ -1,12 +1,11 @@
 from jose import jwt
 
-from infra.claims.entities import Claims
-from infra.claims.policies import TokenPolicy
-from infra.jwt_service.exceptions import InvalidClaimsError
 from src.domain.entities import Account
 from src.domain.ports import JwtService
 from src.domain.value_objects import AccessToken, RefreshToken, Scope
-from src.infra.claims.factories import ClaimsFactory
+
+from src.infra.claims import Claims, ClaimsFactory, TokenPolicy
+from src.infra.exceptions import InvalidClaimsError
 
 
 class JoseJwtServiceImpl(JwtService):
@@ -24,7 +23,7 @@ class JoseJwtServiceImpl(JwtService):
     def _validate(self, claims: Claims) -> None:
         ok, errors = self._policy.validate(claims)
         if not ok:
-            raise InvalidClaimsError(f"Invalid claims: {str(errors)}")
+            raise InvalidClaimsError({"errors": errors})
 
     async def issue_access(self, account: Account, scopes: list[Scope]) -> AccessToken:
         claims_factory = ClaimsFactory(policy=self._policy)

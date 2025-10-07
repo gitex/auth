@@ -1,3 +1,4 @@
+from dependency_injector.wiring import inject
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, EmailStr, SecretStr
 
@@ -22,6 +23,7 @@ class RegisterOut(BaseModel):
 
 
 @router.post("/register")
+@inject
 async def register(body: RegisterIn, service: RegisterServiceDepend) -> RegisterOut:
     cmd = RegisterCommand(
         email=Email(body.email),

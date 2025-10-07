@@ -3,13 +3,15 @@
   "typeCheckingMode": "standard",
   "executionEnvironments": [
     {
-      "root": "./",
-      "extraPaths": [
-        "src",
-        "tests"
-      ]
+      "root": ".",
+      "extraPaths": []
     }
   ],
+  "include": [
+    "src"
+  ],
   "reportUnknownMemberType": false,
-  "reportUnknownVariableType": false
+  "reportUnknownVariableType": false,
+  "venvPath": ".",
+  "venv": ".venv"
 }

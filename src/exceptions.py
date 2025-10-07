@@ -1,7 +1,14 @@
-class ApplicationError(Exception): ...  # TODO: вынести в core
+from typing import Any
 
 
-class AuthError(ApplicationError): ...  # Ошибка уровня сервиса
+type ErrorCtx = dict[str, Any]
 
 
-class ConfigurationError(AuthError): ...
+class MicroserviceError(Exception):
+    message: str = NotImplemented
+    code: str = NotImplemented
+    ctx: ErrorCtx | None = None
+
+    def __init__(self, ctx: ErrorCtx) -> None:
+        self.ctx = ctx
+        super().__init__(f"{self.message} ctx={ctx or {}}")

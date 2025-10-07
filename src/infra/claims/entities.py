@@ -1,36 +1,9 @@
 from dataclasses import asdict, dataclass
-from typing import Any, Self
+from typing import Any
 
 from src.domain.entities import PrivateClaims
 
 from .value_objects import Timestamp
-
-
-@dataclass
-class _BaseClaims:
-    def as_dict(self, exclude_none: bool = False) -> dict[str, Any]:
-        """Возвращает значения в dict, пропуская отсутствующие (необязательные) значения.
-
-        Необходимо всегда формировать claims через этот метод, чтобы была возможность
-        отвязаться от pydanctic.
-        """
-
-        output = {}
-
-        for key, value in asdict(self).items():
-            if exclude_none and value is None:
-                continue
-            output[key] = value
-
-        return output
-
-    def update(self, other: "_BaseClaims") -> Self:
-        """Обновляет значения из других Claims."""
-
-        for key, value in asdict(other).items():
-            setattr(self, key, value)
-
-        return self
 
 
 @dataclass
@@ -63,5 +36,22 @@ class RegisteredClaims:
 
 @dataclass
 class Claims(PrivateClaims, RegisteredClaims):
-    def as_dict(self) -> dict:
-        return asdict(self)
+    def as_dict(self, exclude_none: bool = False) -> dict[str, Any]:
+        """Возвращает значения в dict, пропуская отсутствующие (необязательные) значения.
+
+        Необходимо всегда формировать claims через этот метод, чтобы была возможность
+        отвязаться от pydanctic.
+        """
+
+        output = {}
+
+        for key, value in asdict(self).items():
+            if exclude_none and value is None:
+                continue
+
+            if isinstance(value, Timestamp):  # TODO: mapping?
+                value = int(value)
+
+            output[key] = value
+
+        return output

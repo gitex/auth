@@ -1,1 +1,1 @@
-from .handler import LoginHandler, LoginResult, get_login_handler
+from .service import LoginResult, LoginService, get_login_service

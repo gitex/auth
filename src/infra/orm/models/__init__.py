@@ -1,2 +1,2 @@
-from .account import Account
-from .base import Base
+from .account import Account  # noqa
+from .base import Base  # noqa

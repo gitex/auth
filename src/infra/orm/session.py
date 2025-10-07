@@ -18,6 +18,7 @@ def make_engine(url: str, echo: bool = False, pool_size: int = 20) -> AsyncEngin
         echo=echo,
         future=True,
         pool_size=pool_size,
+        # poolclass=NullPool,
     )
 
 

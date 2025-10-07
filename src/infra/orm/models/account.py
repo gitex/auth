@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import final, override
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from sqlalchemy import TIMESTAMP, Index, String, func
+from sqlalchemy.dialects.postgresql import UUID as PgUUID
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
@@ -16,8 +17,12 @@ class Account(Base):
     __tablename__ = "accounts"
     __table_args__ = (Index("ix_account_email", "email"),)
 
-    id: Mapped[UUID] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(30), unique=True)
+    id: Mapped[UUID] = mapped_column(
+        PgUUID(as_uuid=True),
+        primary_key=True,
+        default=uuid4,
+    )
+    username: Mapped[str | None] = mapped_column(String(30), unique=True)
     email: Mapped[str] = mapped_column(String(320), unique=True)
     password_hash: Mapped[str] = mapped_column(String(255))
     is_email_verified: Mapped[bool] = mapped_column(default=False)

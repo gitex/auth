@@ -14,7 +14,7 @@ def value_should_be_positive(value: int) -> None:
         raise ValidationError("Value must be positive")
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class TTL:
     seconds: int
 
@@ -29,19 +29,19 @@ class TTL:
         return self.seconds
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RefreshSessionId:
     value: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RefreshFamilyId:
     """Цепочка ротаций."""
 
     value: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AccessToken:
     value: str
 
@@ -49,7 +49,7 @@ class AccessToken:
         return str(self.value)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RefreshToken:
     value: str
 
@@ -57,12 +57,12 @@ class RefreshToken:
         return str(self.value)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Email:
     value: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Password:
     value: str
 
@@ -73,12 +73,12 @@ class Password:
         yield from iter(self.value)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class PasswordHash:
     value: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Scope:
     name: str
 
@@ -86,7 +86,7 @@ class Scope:
         assert self.name and self.name.islower() and " " not in self.name
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Role:
     name: str
 

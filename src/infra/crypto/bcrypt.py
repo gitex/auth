@@ -9,7 +9,13 @@ from src.domain.value_objects import Password, PasswordHash
 
 class BcryptPasswordHasherImpl(PasswordHasher):
     def __init__(self) -> None:
-        self._context: CryptContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        self._context: CryptContext = CryptContext(
+            schemes=["argon2"],
+            deprecated="auto",
+            argon2__time_cost=3,
+            argon2__memory_cost=64_000,
+            argon2__parallelism=1,
+        )
 
     @override
     async def verify(self, password: Password, password_hash: PasswordHash) -> bool:

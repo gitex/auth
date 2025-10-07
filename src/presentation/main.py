@@ -4,7 +4,12 @@ from fastapi import FastAPI
 
 from src.infra.config import settings
 
-from .api.login import router as auth_router
+from src.bootstrap.login import AuthContainer
+
+from src.presentation import api as api_package
+
+from .api.login import router as login_router
+from .api.register import router as register_router
 
 
 @asynccontextmanager
@@ -12,10 +17,22 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(
-    debug=settings.debug,
-    title=settings.app_name,
-    lifespan=lifespan,
-)
+container = AuthContainer()
+container.config.from_pydantic(settings)
+container.wire(packages=[api_package])
 
-app.include_router(auth_router)
+
+def create_app() -> FastAPI:
+    app = FastAPI(
+        debug=settings.debug,
+        title=settings.app_name,
+        lifespan=lifespan,
+    )
+
+    app.include_router(login_router)
+    app.include_router(register_router)
+
+    return app
+
+
+app = create_app()

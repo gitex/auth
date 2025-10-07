@@ -1,17 +1,9 @@
 from dataclasses import dataclass, field
 from datetime import timedelta
-from enum import Enum
 from typing import Literal
 
 from .entities import Claims
-
-
-class TokenError(str, Enum):
-    REQUIRED_SUB = "required_sub"
-    REQUIRED_JTI = "required_jti"
-    REQUIRED_EXP = "required_exp"
-    WRONG_ISSUER = "wrong_issuer"
-    WRONG_AUDIENCE = "wrong_audience"
+from .errors import TokenError
 
 
 @dataclass

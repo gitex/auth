@@ -26,4 +26,5 @@ class Account:
     email: Email
     password_hash: PasswordHash
     is_active: bool = True
+    username: str | None = field(default=None)
     roles: list[Role] = field(default_factory=list)

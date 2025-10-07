@@ -14,7 +14,7 @@ def value_should_be_positive(value: int) -> None:
         raise ValueError("Value must be positive")  # TODO: Change exception
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class TTL:
     seconds: int
 
@@ -29,7 +29,7 @@ class TTL:
         return self.seconds
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Timestamp:
     """Unix timestamp."""
 
@@ -52,7 +52,7 @@ class Timestamp:
         return int(self.value)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Token: ...
 
 
