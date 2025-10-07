@@ -63,3 +63,10 @@ just up auth
 - **password.changed**
 - **user.locked**
 - **refresh.rotated**
+
+
+### TODO
+
+- [ ] Добавить валидаторы к `Account` модели (`Email` и прочие)
+- [ ] Добавить интеграционные тесты к API
+- [ ]

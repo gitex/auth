@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+      fail-fast: true
+    env:
+      UV_PYTHON: ${{ matrix.python-version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Intall uv
+        run: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+
+      - name: Install the project
+        run: uv sync --locked --all-extras --dev
+
+      - name: Ruff (lint)
+        run: uv run ruff check .
+
+      - name: Mypy (type check)
+        run: uv run mypy .
+
+      - name: Pytest
+        run: uv run pytest -q --maxfail=1 --disable-warnings --cov --cov-report=xml --timeout 15
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact/@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
