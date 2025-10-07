@@ -33,15 +33,12 @@ async def drop_database(url: str | URL):
     dbms_url = url_object.set(database=POSTGRES_DEFAULT_DB)
     engine = create_async_engine(dbms_url, isolation_level="AUTOCOMMIT")
     async with engine.connect() as conn:
-        disc_users = """
+        disc_users = f"""
         SELECT pg_terminate_backend(pg_stat_activity.%(pid_column)s)
         FROM pg_stat_activity
-        WHERE pg_stat_activity.datname = '%(database)s'
-          AND %(pid_column)s <> pg_backend_pid();
-        """ % {
-            "pid_column": "pid",
-            "database": url_object.database,
-        }
+        WHERE pg_stat_activity.datname = '{url_object.database}'
+          AND pid <> pg_backend_pid();
+        """
         await conn.execute(text(disc_users))
 
         await conn.execute(text(f'DROP DATABASE "{url_object.database}"'))

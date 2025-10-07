@@ -1,7 +1,7 @@
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 
-from domain.exceptions import InvalidCredentialsError
+from src.domain.exceptions import InvalidCredentialsError
 
 from .main import app
 

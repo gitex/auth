@@ -1,5 +1,6 @@
 import asyncio
-from collections.abc import AsyncIterator
+from asyncio import AbstractEventLoop
+from collections.abc import AsyncIterator, Generator
 
 import pytest
 import pytest_asyncio
@@ -37,7 +38,7 @@ def anyio_backend():
 
 
 @pytest.fixture(scope="session")
-def event_loop():
+def event_loop() -> Generator[AbstractEventLoop]:
     loop = asyncio.new_event_loop()
     yield loop
     loop.close()
@@ -70,7 +71,7 @@ def password() -> str:
 
 
 @pytest_asyncio.fixture(scope="session", loop_scope="session", autouse=True)
-async def database(db_url: str, event_loop):
+async def database(db_url: str, event_loop: Generator[AbstractEventLoop]):
     """Test database controller."""
 
     await create_database(db_url)

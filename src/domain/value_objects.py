@@ -2,7 +2,7 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import timedelta
 
-from .exceptions import ValidationError
+from .exceptions import ShouldBePositiveError
 
 
 def value_should_be_positive(value: int) -> None:
@@ -11,7 +11,7 @@ def value_should_be_positive(value: int) -> None:
     :raise ValueError
     """
     if value < 0:
-        raise ValidationError("Value must be positive")
+        raise ShouldBePositiveError({"value": value})
 
 
 @dataclass(frozen=True, slots=True)

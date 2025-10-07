@@ -1,23 +1,19 @@
-class ApplicationError(Exception):
-    """Base exception for inheritance.
-
-    Do not call this error directly. Make errors for specific cases.
-    """
+from src.exceptions import MicroserviceError
 
 
-class ValidationError(ApplicationError): ...
+class DomainError(MicroserviceError): ...
 
 
-class AuthError(ApplicationError): ...  # базовый Exception
+class ValidationError(DomainError):
+    code = "validation_error"
+    message = "Invalid value"
 
 
-class InvalidCredentialsError(AuthError): ...
+class ShouldBePositiveError(ValidationError):
+    code = "value_should_be_positive"
+    message = "Value should be positive"
 
 
-class JwtError(ApplicationError): ...
-
-
-class ClaimError(JwtError): ...
-
-
-class InsufficientScopeError(JwtError): ...
+class InvalidCredentialsError(DomainError):
+    code = "invalid_credentials"
+    message = "Invalid credentials"

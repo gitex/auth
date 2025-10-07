@@ -37,4 +37,7 @@ class Settings(BaseSettings):
     jwt: Jwt = Jwt()
 
 
-settings = Settings()
+# Some settings do not have defaults, because it's user's responsibility for
+#   setting these values. Errors would be a signal of necessity and importance those settings.
+#   Default settings for database and other important stuff can create confusion for developer.
+settings = Settings()  # type: ignore [call-arg]

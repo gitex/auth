@@ -5,14 +5,11 @@ from src.domain.policies.password import PasswordPolicy
 from src.domain.ports import PasswordHasher
 from src.domain.value_objects import Email, Password
 
-from src.infra.crypto.bcrypt import BcryptPasswordHasherImpl
-
 from src.application.exceptions import (
     AccountAlreadyExistsError,
     PasswordPolicyError,
 )
-from src.application.session import SessionFactory
-from src.application.uow import SqlAlchemyUoW, UnitOfWork
+from src.application.uow import UnitOfWork
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,15 +53,3 @@ class RegisterService:
             )
 
         return RegisterResult(account=account)
-
-
-def get_register_service() -> RegisterService:
-    return RegisterService(
-        uow=SqlAlchemyUoW(SessionFactory),
-        password_hasher=BcryptPasswordHasherImpl(),
-        password_policy=PasswordPolicy(
-            min_length=4,
-            require_symbols=False,
-            require_digit=False,
-        ),
-    )

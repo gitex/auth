@@ -3,7 +3,7 @@ from dependency_injector import containers, providers
 from src.domain.policies.password import PasswordPolicy
 
 from src.infra.claims.policies import TokenPolicy
-from src.infra.config import Settings
+from src.infra.config import settings
 from src.infra.crypto.bcrypt import BcryptPasswordHasherImpl
 from src.infra.jwt_service.jose import JoseJwtServiceImpl
 from src.infra.orm.session import make_async_session_factory, make_engine
@@ -14,7 +14,7 @@ from src.application.uow import SqlAlchemyUoW
 
 
 class AuthContainer(containers.DeclarativeContainer):
-    config = providers.Configuration(pydantic_settings=[Settings()])
+    config = providers.Configuration(pydantic_settings=[settings])
 
     engine = providers.Singleton(
         make_engine,

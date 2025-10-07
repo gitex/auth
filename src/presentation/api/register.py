@@ -38,4 +38,4 @@ async def register(body: RegisterIn, service: RegisterServiceDepend) -> Register
             detail=str(e),
         ) from e
 
-    return RegisterOut(detail="Account created succesfully! You can login now.")
+    return RegisterOut(detail="Account created successfully! You can login now.")

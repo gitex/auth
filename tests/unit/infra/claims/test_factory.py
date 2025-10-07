@@ -5,22 +5,22 @@ from src.infra.claims.policies import TokenPolicy
 from src.infra.claims.value_objects import Timestamp
 
 
-def test_iat_should_be_current_time(token_policy, ts: int, sub: str) -> None:
+def test_iat_should_be_current_time(token_policy: TokenPolicy, ts: int, sub: str) -> None:
     with time_machine.travel(ts, tick=False):
         factory = ClaimsFactory(token_policy)
 
         at = factory.access_claims(sub)
         rt = factory.refresh_claims(sub)
 
-    assert at.iss == token_policy.iss
-    assert at.aud == token_policy.aud
+    assert at.iss == token_policy.issuer
+    assert at.aud == token_policy.audience
     assert at.sub == sub
     assert at.iat == ts
     assert at.nbf == ts
     assert at.exp == ts + token_policy.access_ttl.total_seconds()
 
-    assert rt.iss == token_policy.iss
-    assert rt.aud == token_policy.aud
+    assert rt.iss == token_policy.issuer
+    assert rt.aud == token_policy.audience
     assert rt.sub == sub
     assert rt.iat == ts
     assert rt.nbf == ts

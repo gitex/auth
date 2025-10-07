@@ -1,4 +1,4 @@
-from src.auth_types import Algorithm
+from typing import Literal
 
 
-DEFAULT_ALGORITHM: Algorithm = "HS256"
+DEFAULT_ALGORITHM: Literal["HS256"] = "HS256"

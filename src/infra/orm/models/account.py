@@ -3,7 +3,7 @@ from typing import final, override
 from uuid import UUID, uuid4
 
 from sqlalchemy import TIMESTAMP, Index, String, func
-from sqlalchemy.dialects.postgresql import UUID as PgUUID
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
@@ -18,7 +18,7 @@ class Account(Base):
     __table_args__ = (Index("ix_account_email", "email"),)
 
     id: Mapped[UUID] = mapped_column(
-        PgUUID(as_uuid=True),
+        PG_UUID(as_uuid=True),
         primary_key=True,
         default=uuid4,
     )
