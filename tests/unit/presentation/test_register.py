@@ -19,12 +19,11 @@ def register_data(email: str, password: str):
 
 @pytest.mark.asyncio
 async def test_register_by_valid_email_and_password(
-    client: AsyncClient, password: str, uow: UnitOfWork
+    client: AsyncClient,
+    password: str,
+    uow: UnitOfWork,
 ):
     email = fake.email(domain="example.com")
-
     r = await client.post(REGISTER_URL, json=register_data(email, password))
-    assert r.status_code == 200
-
-    async with uow:
-        assert await uow.accounts.get_by_email(Email(email))
+    assert r.status_code == 200, r.json()
+    assert await uow.accounts.get_by_email(Email(email))

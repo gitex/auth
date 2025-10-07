@@ -1,12 +1,9 @@
-from datetime import timedelta
 from uuid import uuid4
 
 import pytest
 
-from src.claims import Claims, ClaimsFactory
-from src.codecs.jose import JoseJwtCodec
-from src.constants import DEFAULT_ALGORITHM
-from src.dto import JwtSpec
+from src.infra.claims import Claims, ClaimsFactory
+from src.infra.claims.policies import TokenPolicy
 
 
 @pytest.fixture(scope="session")
@@ -19,25 +16,17 @@ def sub() -> str:
     return uuid4().hex
 
 
-@pytest.fixture(scope="session")
-def jwt_spec() -> JwtSpec:
-    return JwtSpec(
-        alg="HS256",
-        iss="test",
-        aud="test",
-        access_ttl=timedelta(minutes=5),
-        refresh_ttl=timedelta(hours=1),
+@pytest.fixture
+def token_policy() -> TokenPolicy:
+    return TokenPolicy(
+        issuer="test",
+        audience="test",
     )
 
 
-@pytest.fixture
-def jwt_codec() -> JoseJwtCodec:
-    return JoseJwtCodec("test-secret", DEFAULT_ALGORITHM)
-
-
 @pytest.fixture(scope="session")
-def claims_factory(jwt_spec: JwtSpec) -> ClaimsFactory:
-    return ClaimsFactory(jwt_spec)
+def claims_factory(token_policy: TokenPolicy) -> ClaimsFactory:
+    return ClaimsFactory(token_policy)
 
 
 @pytest.fixture
