@@ -78,9 +78,7 @@ repos:
         args: ["-shellcheck=auto"]
         files: ^\.github/workflows/.*\.ya?ml$
 
-  # - repo: https://github.com/adrienverge/yamllint
-  #   rev: v1.37.1
-  #   hooks:
-  #     - id: yamllint
-  #       files: ^\.github/workflows/.*\.ya?ml$|docker-compose.yml
-  #       args: ["-d", "{extends: default, rules: {line-length: disable}}"]
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks

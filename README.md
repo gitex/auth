@@ -6,36 +6,8 @@
 с присущими им рисками**, которые решают определённые задачи. Не более того.
 - Автор может **не разделять любви** к тем или иным решениям, но его **жажда знаний и инструментов** привела его сюда.
 
-<!-- START doctoc -->
-<!-- END doctoc -->
-
-### Запуск сервиса
-
-Сервис запускается из корня репозитория командами
-```bash
-# Создаём побочные файлы (.env)
-just init
-
-# Запускаем зависимости (redis, database, kafka)
-just up
-
-# Запускаем сервис
-just up service
-```
-
-### Разработка
-
-#### Pre-commit
-
-```bash
-# Устанавливаем pre-commit
-pipx install pre-commit
-
-# В корне инициализируем
-pre-commit
-
-
-```
+- [Как начать?](./docs/gettings-started.md)
+- [Архитектура](./docs/architecture/overview.md)
 
 ### Роль сервиса
 
@@ -48,46 +20,8 @@ pre-commit
 ли овчинка выделки (в технических сервисах).
 
 
-### Domain
-
-Доменная область в *Auth* отвечает за безопасность. Наличие логики jwt внутри домена не поощряется.
-
-#### Entities
-
-- **Identity** / **Account**: id, email, is_active и прочее
-- **Credential**. Пароль/ключ
-- **Session / RefreshSession**. TTL, цепочки, rotation, revoked_at
-- **Key**. Подпись токенов (kid/ротация ключей)
-- **AuditEvent**. Факт логина/логаута/смены пароля/блокировки
-
-#### Value-objects
-
-- Email
-- PasswordHash
-- Scope
-- Role
-- Permission
-- IpAddress
-- UserAgent
-
-#### Services
-
-- **PasswordPolicy**. Требования к паролю: длина, состав,
-история (не переиспользовать), срок жизни и прочее.
-- **LockoutPolicy**. Блокируем на время, если N раз неуспешных попыток.
-- **TokenPolicy**. Что содержит, TTL, audience/issuer
-
-#### События
-
-- **user.registered**
-- **user.loggedin**
-- **password.changed**
-- **user.locked**
-- **refresh.rotated**
-
-
 ### TODO
 
+- [ ] Поправить существующие тесты
 - [ ] Добавить валидаторы к `Account` модели (`Email` и прочие)
 - [ ] Добавить интеграционные тесты к API
-- [ ]
