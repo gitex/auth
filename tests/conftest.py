@@ -1,3 +1,4 @@
+import os
 from collections.abc import AsyncGenerator, AsyncIterator
 
 import pytest
@@ -24,10 +25,15 @@ from src.presentation.main import app, container as main_container
 from tests.utils import create_database
 
 
+@pytest.fixture(scope="session")
+def worker_id() -> str:
+    return os.environ.get("PYTEST_XDIST_WORKER", "gw0")
+
+
 @pytest.fixture(scope="session", autouse=True)
-def conf() -> Settings:
+def conf(worker_id: str) -> Settings:
     """Test settings"""
-    settings.database_url = f"{settings.database_url}_test"
+    settings.database_url = f"{settings.database_url}_test_{worker_id}"
     settings.debug = True
     return settings
 
