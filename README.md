@@ -24,3 +24,5 @@
 - [ ] Добавить валидаторы к `Account` модели (`Email` и прочие)
 - [ ] Добавить интеграционные тесты к API
 - [ ] Добавить экспорт `openapi.yaml|json` в `./docs/api`
+- [ ] Добавить https://github.com/albertas/deadcode и убрать всё, что не используется
+- [ ] Потестить https://wemake-python-styleguide.readthedocs.io/en/latest/index.html
