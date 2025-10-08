@@ -43,10 +43,13 @@ class Timestamp:
         return cls(int(time.time()))
 
     def add_seconds(self, seconds: int) -> "Timestamp":
-        return Timestamp(self.value + seconds)
+        return Timestamp(self.value + int(seconds))
 
     def add_ttl(self, ttl: TTL) -> "Timestamp":
         return self.add_seconds(ttl.seconds)
+
+    def add_timedelta(self, td: timedelta) -> "Timestamp":
+        return self.add_seconds(int(td.total_seconds()))
 
     def __int__(self) -> int:
         return int(self.value)

@@ -1,6 +1,6 @@
 default_stages: [pre-commit]
 
-exclude: ^(docs/|migrations/).*
+exclude: ^(.venv/|docs/|migrations/).*
 
 repos:
   - repo: local

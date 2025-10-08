@@ -1,7 +1,6 @@
 from typing import override
 
 from passlib.context import CryptContext
-from passlib.hash import bcrypt
 
 from src.domain.ports import PasswordHasher
 from src.domain.value_objects import Password, PasswordHash
@@ -19,7 +18,7 @@ class BcryptPasswordHasherImpl(PasswordHasher):
 
     @override
     async def verify(self, password: Password, password_hash: PasswordHash) -> bool:
-        return bcrypt.verify(password.value, password_hash.value)
+        return self._context.verify(password.value, password_hash.value)
 
     @override
     async def hash(self, password: Password) -> PasswordHash:

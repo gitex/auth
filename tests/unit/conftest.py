@@ -4,11 +4,12 @@ import pytest
 
 from src.infra.claims import Claims, ClaimsFactory
 from src.infra.claims.policies import TokenPolicy
+from src.infra.claims.value_objects import Timestamp
 
 
 @pytest.fixture(scope="session")
-def ts() -> int:
-    return 1759420090
+def ts() -> Timestamp:
+    return Timestamp(1759420090)
 
 
 @pytest.fixture
@@ -24,7 +25,7 @@ def token_policy() -> TokenPolicy:
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def claims_factory(token_policy: TokenPolicy) -> ClaimsFactory:
     return ClaimsFactory(token_policy)
 

@@ -16,6 +16,7 @@ class ClaimFactory:
 
     def exp(self, base: Timestamp, ttl: timedelta) -> Timestamp:
         """(Expiration Time): Unix время истечения токена."""
+
         return base.add_seconds(int(ttl.total_seconds()))
 
     def iat(self) -> Timestamp:

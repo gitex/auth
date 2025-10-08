@@ -16,14 +16,8 @@ class Jwt(BaseSettings):
     issuer: str = "auth"
     access_ttl_seconds: int = 60 * 15  # 15 minutes
     refresh_ttl_seconds: int = 60 * 60 * 24  # 1 day
-
-    @property
-    def access_ttl(self) -> timedelta:
-        return timedelta(seconds=self.access_ttl_seconds)
-
-    @property
-    def refresh_ttl(self) -> timedelta:
-        return timedelta(seconds=self.refresh_ttl_seconds)
+    access_ttl: timedelta = timedelta(minutes=15)
+    refresh_ttl: timedelta = timedelta(days=7)
 
 
 @injectable

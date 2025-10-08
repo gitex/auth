@@ -12,13 +12,16 @@ from sqlalchemy.ext.asyncio import (
 type SessionFactory = Callable[[], AsyncSession]
 
 
-def make_engine(url: str, echo: bool = False, pool_size: int = 20) -> AsyncEngine:
+def make_engine(
+    url: str,
+    echo: bool = False,
+    pool_size: int = 20,
+) -> AsyncEngine:
     return create_async_engine(
         url,
         echo=echo,
-        future=True,
         pool_size=pool_size,
-        # poolclass=NullPool,
+        future=True,
     )
 
 

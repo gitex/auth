@@ -80,7 +80,7 @@ skip-magic-trailing-comma = false
 
 # ---- isort ----
 [tool.isort]
-skip = ["migrations/", "docs/"]
+skip = ["migrations/", "docs/", ".venv/"]
 profile = "black"
 py_version = 312
 src_paths = ["src", "tests"]

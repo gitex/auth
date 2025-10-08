@@ -29,3 +29,8 @@ rebuild:
     @just down {{ docker_service_profile }}
     sudo docker compose build auth
     @just up {{ docker_service_profile }}
+
+venv:
+    rm -rf .venv
+    uv venv
+    uv sync
