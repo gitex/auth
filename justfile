@@ -7,9 +7,10 @@ docker_service_profile := 'service'
 docker_network := 'market_net'
 
 init:
-    cp --update=none env.example .env
+    cp --update=none .env.template .env
     uv run pre-commit install
     uv run pre-commit install-hooks
+    @just venv
 
 up profile=docker_deps_profile:
     sudo docker network inspect {{ docker_network}} >/dev/null 2>&1 \
