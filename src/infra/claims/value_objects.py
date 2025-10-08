@@ -11,7 +11,7 @@ def value_should_be_positive(value: int) -> None:
     :raise ValueError
     """
     if value < 0:
-        raise ValueError("Value must be positive")  # TODO: Change exception
+        raise ValueError('Value must be positive')  # TODO: Change exception
 
 
 @dataclass(frozen=True, slots=True)
@@ -22,7 +22,7 @@ class TTL:
         value_should_be_positive(self.seconds)
 
     @classmethod
-    def from_timedelta(cls, delta: timedelta) -> "TTL":
+    def from_timedelta(cls, delta: timedelta) -> 'TTL':
         return cls(int(delta.total_seconds()))
 
     def __int__(self) -> int:
@@ -42,13 +42,13 @@ class Timestamp:
     def now(cls) -> Self:
         return cls(int(time.time()))
 
-    def add_seconds(self, seconds: int) -> "Timestamp":
+    def add_seconds(self, seconds: int) -> 'Timestamp':
         return Timestamp(self.value + int(seconds))
 
-    def add_ttl(self, ttl: TTL) -> "Timestamp":
+    def add_ttl(self, ttl: TTL) -> 'Timestamp':
         return self.add_seconds(ttl.seconds)
 
-    def add_timedelta(self, td: timedelta) -> "Timestamp":
+    def add_timedelta(self, td: timedelta) -> 'Timestamp':
         return self.add_seconds(int(td.total_seconds()))
 
     def __int__(self) -> int:
@@ -74,7 +74,7 @@ class Jti:  # TODO убрать, не domain
     value: UUID
 
     @classmethod
-    def new(cls) -> "Jti":
+    def new(cls) -> 'Jti':
         return cls(uuid4())
 
     def __str__(self) -> str:

@@ -14,6 +14,7 @@ type SessionFactory = Callable[[], AsyncSession]
 
 def make_engine(
     url: str,
+    *,
     echo: bool = False,
     pool_size: int = 20,
 ) -> AsyncEngine:

@@ -7,8 +7,11 @@ from .main import app
 
 
 @app.exception_handler(InvalidCredentialsError)
-async def invalid_credentials(_: Request, exc: InvalidCredentialsError) -> JSONResponse:
+async def invalid_credentials(  # noqa: RUF029
+    _: Request,
+    exc: InvalidCredentialsError,
+) -> JSONResponse:
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
-        content={"detail": "Invalid email or password"},
+        content={'detail': 'Invalid email or password'},
     )

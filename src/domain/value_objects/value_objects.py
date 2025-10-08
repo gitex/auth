@@ -2,7 +2,7 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import timedelta
 
-from .exceptions import ShouldBePositiveError
+from src.domain.exceptions import ShouldBePositiveError
 
 
 def value_should_be_positive(value: int) -> None:
@@ -11,7 +11,7 @@ def value_should_be_positive(value: int) -> None:
     :raise ValueError
     """
     if value < 0:
-        raise ShouldBePositiveError({"value": value})
+        raise ShouldBePositiveError({'value': value})
 
 
 @dataclass(frozen=True, slots=True)
@@ -22,7 +22,7 @@ class TTL:
         value_should_be_positive(self.seconds)
 
     @classmethod
-    def from_timedelta(cls, delta: timedelta) -> "TTL":
+    def from_timedelta(cls, delta: timedelta) -> 'TTL':
         return cls(int(delta.total_seconds()))
 
     def __int__(self) -> int:
@@ -82,13 +82,13 @@ class PasswordHash:
 class Scope:
     name: str
 
-    def __post_init__(self) -> None:
-        assert self.name and self.name.islower() and " " not in self.name
+    def __str__(self) -> str:
+        return self.name.strip().lower()
 
 
 @dataclass(frozen=True, slots=True)
 class Role:
     name: str
 
-    def __post_init__(self) -> None:
-        assert self.name and self.name.islower() and " " not in self.name
+    def __str__(self) -> str:
+        return self.name.strip().lower()

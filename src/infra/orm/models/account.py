@@ -14,8 +14,8 @@ from .base import Base
 
 @final
 class Account(Base):
-    __tablename__ = "accounts"
-    __table_args__ = (Index("ix_account_email", "email"),)
+    __tablename__ = 'accounts'
+    __table_args__ = (Index('ix_account_email', 'email'),)
 
     id: Mapped[UUID] = mapped_column(
         PG_UUID(as_uuid=True),
@@ -37,4 +37,4 @@ class Account(Base):
 
     @override
     def __repr__(self) -> str:
-        return f"Account(id={self.id}, email={self.email})"
+        return f'Account(id={self.id}, email={self.email})'

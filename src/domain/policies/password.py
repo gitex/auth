@@ -7,12 +7,12 @@ from src.domain.value_objects import Password
 
 
 class PasswordError(Enum):
-    TOO_SHORT = "too_short"
-    TOO_LONG = "too_long"
-    REQUIRE_LOWER = "require_lower"
-    REQUIRE_UPPER = "require_upper"
-    REQUIRE_DIGIT = "require_digit"
-    REQUIRE_SYMBOL = "require_symbol"
+    TOO_SHORT = 'too_short'
+    TOO_LONG = 'too_long'
+    REQUIRE_LOWER = 'require_lower'
+    REQUIRE_UPPER = 'require_upper'
+    REQUIRE_DIGIT = 'require_digit'
+    REQUIRE_SYMBOL = 'require_symbol'
 
 
 SYMBOLS = set(r"!@#$%^&*()-_=+[]{};:'\",.<>/?\|`~")
@@ -31,11 +31,11 @@ class PasswordPolicy:
     max_repeats: int = 3  # "aaaa"
     max_sequential: int = 4  # "abcd" | "1234"
 
-    blacklist: frozenset[str] = frozenset({"password", "qwerty", "12345"})
+    blacklist: frozenset[str] = frozenset({'password', 'qwerty', '12345'})
 
     expires_in: timedelta = timedelta(days=365)
 
-    def validate(self, password: Password) -> tuple[bool, list[str]]:
+    def validate(self, password: Password) -> tuple[bool, list[str]]:  # noqa
         errors: list[str] = []
 
         n = len(password)
@@ -51,13 +51,13 @@ class PasswordPolicy:
             return any(f(c) for c in password)
 
         if self.require_lower and not password_has(str.islower):
-            errors.append("Password should contain lowercase letter")
+            errors.append('Password should contain lowercase letter')
         if self.require_upper and not password_has(str.isupper):
-            errors.append("Password should contain uppercase letter")
+            errors.append('Password should contain uppercase letter')
         if self.require_digit and not password_has(str.isdigit):
-            errors.append("Password should contain digit")
+            errors.append('Password should contain digit')
         if self.require_symbol and not any(c in SYMBOLS for c in password):
-            errors.append("Password should contain any of special symbols")
+            errors.append('Password should contain any of special symbols')
 
         if errors:
             return False, errors

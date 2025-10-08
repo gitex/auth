@@ -14,7 +14,7 @@ from .api.register import router as register_router
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:  # noqa: RUF029
     yield
 
 

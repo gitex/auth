@@ -6,12 +6,11 @@ from src.domain.value_objects import Email, PasswordHash, Role
 
 @dataclass
 class PrivateClaims:
-    """
-    Attributes:
-        email: email клиента
-        roles: Роли клиента
-        scope: Набор сервисов, для которых token валиден
-        groups: Список групп прав пользователя
+    """Attributes:
+    email: email клиента
+    roles: Роли клиента
+    scope: Набор сервисов, для которых token валиден
+    groups: Список групп прав пользователя
     """
 
     email: str | None = None

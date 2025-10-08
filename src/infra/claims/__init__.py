@@ -5,8 +5,8 @@ from .value_objects import Jti
 
 
 __all__ = [
-    "Claims",
-    "ClaimsFactory",
-    "TokenPolicy",
-    "Jti",
+    'Claims',
+    'ClaimsFactory',
+    'Jti',
+    'TokenPolicy',
 ]

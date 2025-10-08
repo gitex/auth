@@ -23,7 +23,7 @@ class JoseJwtServiceImpl(JwtService):
     def _validate(self, claims: Claims) -> None:
         ok, errors = self._policy.validate(claims)
         if not ok:
-            raise InvalidClaimsError({"errors": errors})
+            raise InvalidClaimsError({'errors': errors})
 
     async def issue_access(self, account: Account, scopes: list[Scope]) -> AccessToken:
         claims_factory = ClaimsFactory(policy=self._policy)

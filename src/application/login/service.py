@@ -38,7 +38,7 @@ class LoginService:
         if not account or not await self.password_hasher.verify(
             password, account.password_hash
         ):
-            raise InvalidCredentialsError({"email": email})
+            raise InvalidCredentialsError({'email': email})
 
         access_token = await self.jwt_service.issue_access(account, scopes=[])
         refresh_token = await self.jwt_service.issue_refresh(account)

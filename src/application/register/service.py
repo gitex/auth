@@ -34,11 +34,11 @@ class RegisterService:
             account = await uow.accounts.get_by_email(cmd.email)
 
         if account:
-            raise AccountAlreadyExistsError({"email": cmd.email})
+            raise AccountAlreadyExistsError({'email': cmd.email})
 
         ok, errors = self.password_policy.validate(cmd.password)
         if not ok:
-            raise PasswordPolicyError({"errors": errors})
+            raise PasswordPolicyError({'errors': errors})
 
         async with self.uow as uow:
             account = await uow.accounts.create(

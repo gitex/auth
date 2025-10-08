@@ -116,6 +116,8 @@ ignore = [
     "ISC001",  # implicit string concat conflicts with `ruff format`
     "COM812",  # conflict with `rust format`
     "TRY003",  # Long messages outside exception class
+    "RUF002",  # always errors about comments in russian
+    "RUF003",  # same as 002
 ]
 external = [ "WPS" ]
 

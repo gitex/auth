@@ -5,12 +5,10 @@ from src.domain.value_objects import TTL
 
 @dataclass
 class JwtSpec:
-    """
-
-    Attributes:
-        alg: Алгоритм шифрования
-        iss: (Issuer): кто выдал токен?
-        aud: (Audience): для каких сервисов он валиден?
+    """Attributes:
+    alg: Алгоритм шифрования
+    iss: (Issuer): кто выдал токен?
+    aud: (Audience): для каких сервисов он валиден?
     """
 
     alg: str

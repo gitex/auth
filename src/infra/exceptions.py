@@ -5,5 +5,5 @@ class InfrastructureError(MicroserviceError): ...
 
 
 class InvalidClaimsError(InfrastructureError):
-    code = "invalid_claims"
-    message = "Presented claims are not valid"
+    code = 'invalid_claims'
+    message = 'Presented claims are not valid'

@@ -10,7 +10,7 @@ from src.application.register import RegisterCommand
 from src.presentation.dependencies import RegisterServiceDepend
 
 
-router = APIRouter(tags=["authorization"])
+router = APIRouter(tags=['authorization'])
 
 
 class RegisterIn(BaseModel):
@@ -22,7 +22,7 @@ class RegisterOut(BaseModel):
     detail: str
 
 
-@router.post("/register")
+@router.post('/register')
 @inject
 async def register(body: RegisterIn, service: RegisterServiceDepend) -> RegisterOut:
     cmd = RegisterCommand(
@@ -38,4 +38,4 @@ async def register(body: RegisterIn, service: RegisterServiceDepend) -> Register
             detail=str(e),
         ) from e
 
-    return RegisterOut(detail="Account created successfully! You can login now.")
+    return RegisterOut(detail='Account created successfully! You can login now.')

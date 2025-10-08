@@ -1,3 +1,4 @@
+import time
 from dataclasses import dataclass
 from datetime import timedelta
 from uuid import uuid4
@@ -14,14 +15,13 @@ class ClaimFactory:
         """(JWT ID): уникальный идентификатор токена."""
         return uuid4().hex
 
-    def exp(self, base: Timestamp, ttl: timedelta) -> Timestamp:
+    def exp(self, base: int, ttl: timedelta) -> int:
         """(Expiration Time): Unix время истечения токена."""
+        return base + int(ttl.total_seconds())
 
-        return base.add_seconds(int(ttl.total_seconds()))
-
-    def iat(self) -> Timestamp:
+    def iat(self) -> int:
         """(Issued At): Unix время создания токена."""
-        return Timestamp.now()
+        return int(time.time())
 
 
 @dataclass
@@ -33,14 +33,14 @@ class ClaimsFactory:
     """
 
     policy: TokenPolicy
-    claim_factory: ClaimFactory = ClaimFactory()
 
     def _base_claims(
         self, sub: str, ttl: timedelta, nbf: Timestamp | None = None
     ) -> Claims:
-        claims = Claims(sub=sub, jti=self.claim_factory.jti())
+        claim_factory: ClaimFactory = ClaimFactory()
+        claims = Claims(sub=sub, jti=claim_factory.jti())
 
-        iat = self.claim_factory.iat()
+        iat = claim_factory.iat()
         claims.iat = iat
 
         if iss := self.policy.issuer:
@@ -50,20 +50,18 @@ class ClaimsFactory:
             claims.aud = aud
 
         if nbf:
-            claims.nbf = nbf
-            claims.exp = self.claim_factory.exp(base=nbf, ttl=ttl)
+            claims.nbf = nbf.value
+            claims.exp = claim_factory.exp(base=nbf.value, ttl=ttl)
         elif iat:
             claims.nbf = iat
-            claims.exp = self.claim_factory.exp(base=iat, ttl=ttl)
+            claims.exp = claim_factory.exp(base=iat, ttl=ttl)
 
         return claims
 
     def access_claims(self, sub: str, nbf: Timestamp | None = None) -> Claims:
         """Claims для создания access token."""
-
         return self._base_claims(sub, nbf=nbf, ttl=self.policy.access_ttl)
 
     def refresh_claims(self, sub: str, nbf: Timestamp | None = None) -> Claims:
         """Claims для создания refresh token."""
-
         return self._base_claims(sub, nbf=nbf, ttl=self.policy.refresh_ttl)

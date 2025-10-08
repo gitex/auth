@@ -3,8 +3,6 @@ from typing import Any
 
 from src.domain.entities import PrivateClaims
 
-from .value_objects import Timestamp
-
 
 @dataclass
 class RegisteredClaims:
@@ -28,29 +26,25 @@ class RegisteredClaims:
     sub: str | None = None
     iss: str | None = None
     aud: str | None = None
-    exp: Timestamp | None = None
-    nbf: Timestamp | None = None
-    iat: Timestamp | None = None
+    exp: int | None = None
+    nbf: int | None = None
+    iat: int | None = None
     jti: str | None = None
 
 
 @dataclass
 class Claims(PrivateClaims, RegisteredClaims):
-    def as_dict(self, exclude_none: bool = False) -> dict[str, Any]:
+    def as_dict(self, *, exclude_none: bool = False) -> dict[str, Any]:
         """Возвращает значения в dict, пропуская отсутствующие (необязательные) значения.
 
         Необходимо всегда формировать claims через этот метод, чтобы была возможность
         отвязаться от pydanctic.
         """
-
         output = {}
 
         for key, value in asdict(self).items():
             if exclude_none and value is None:
                 continue
-
-            if isinstance(value, Timestamp):  # TODO: mapping?
-                value = int(value)
 
             output[key] = value
 

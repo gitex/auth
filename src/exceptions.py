@@ -11,4 +11,4 @@ class MicroserviceError(Exception):
 
     def __init__(self, ctx: ErrorCtx) -> None:
         self.ctx = ctx
-        super().__init__(f"{self.message} ctx={ctx or {}}")
+        super().__init__(f'{self.message} ctx={ctx or {}}')

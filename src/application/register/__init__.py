@@ -6,7 +6,7 @@ from .service import (
 
 
 __all__ = [
-    "RegisterCommand",
-    "RegisterResult",
-    "RegisterService",
+    'RegisterCommand',
+    'RegisterResult',
+    'RegisterService',
 ]
