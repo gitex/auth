@@ -24,6 +24,7 @@ dev = [
     "asgi-lifespan>=2.1.0",
     "factory-boy>=3.3.3",
     "faker>=37.8.0",
+    "flake8>=7.3.0",
     "freezegun>=1.5.5",
     "httpx>=0.28.1",
     "hypothesis>=6.140.2",
@@ -44,6 +45,7 @@ dev = [
     "time-machine>=2.19.0",
     "types-passlib>=1.7.7.20250602",
     "types-python-jose>=3.5.0.20250531",
+    "wemake-python-styleguide>=1.4.0",
 ]
 
 # ---- basedpyright ----
@@ -53,31 +55,79 @@ pythonVersion = "3.12"
 
 # ---- ruff ----
 [tool.ruff]
+# Ruff config: https://docs.astral.sh/ruff/settings
 src = ["src"]
+preview = true
+fix = true
 line-length = 90
 target-version = "py312"
 extend-exclude = [".venv", "migrations"]
-fix = true
 
 [tool.ruff.lint]
 select = [
-    "E", "F", "W",
-    "UP",
-    "B", "SIM", "C4", "N", "T20", "ANN",
+  "A",    # flake8-builtins
+  "ANN",
+  "B",    # flake8-bugbear
+  "C4",   # flake8-comprehensions
+  "C90",  # maccabe
+  "COM",  # flake8-commas
+  "D",    # pydocstyle
+  "DTZ",  # flake8-datetimez
+  "E",    # pycodestyle
+  "ERA",  # flake8-eradicate
+  "EXE",  # flake8-executable
+  "F",    # pyflakes
+  "FA",   # flake8-future-annotations
+  "FBT",  # flake8-boolean-trap
+  "FLY",  # pyflint
+  "FURB", # refurb
+  "G",    # flake8-logging-format
+  # "I",    # isort
+  "ICN",  # flake8-import-conventions
+  "ISC",  # flake8-implicit-str-concat
+  "LOG",  # flake8-logging
+  "N",    # pep8-naming
+  "PERF", # perflint
+  "PIE",  # flake8-pie
+  "PL",   # pylint
+  "PT",   # flake8-pytest-style
+  "PTH",  # flake8-use-pathlib
+  "Q",    # flake8-quotes
+  "RET",  # flake8-return
+  "RSE",  # flake8-raise
+  "RUF",  # ruff
+  "S",    # flake8-bandit
+  "SIM",  # flake8-simpify
+  "SLF",  # flake8-self
+  "SLOT", # flake8-slots
+  "T100", # flake8-debugger
+  "T20",
+  "TRY",  # tryceratops
+  "UP",   # pyupgrade
+  "W",    # pycodestyle
+  "YTT",  # flake8-2020
 ]
 ignore = [
     "E203",
+    "PLR6301", # do not require classmethod / staticmethod when self not used
     "E501",
 ]
+external = [ "WPS" ]
+
+flake8-quotes.inline-quotes = "single"
+mccabe.max-complexity = 6
+pydocstyle.convention = "google"
 
 [tool.ruff.format]
-indent-style = "space"
+quote-style = "single"
 line-ending = "lf"
-skip-magic-trailing-comma = false
+docstring-code-format = true
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["ANN201"]
-
+"server/apps/*/migrations/*.py" = ["D101", "E501", "RUF012"]
+"server/common/typing/*.py" = ["F401"]
+"tests/*.py" = ["S101"]
 # ---- isort ----
 [tool.isort]
 skip = ["migrations/", "docs/", ".venv/"]
@@ -106,6 +156,36 @@ sections = [
 ]
 lines_after_imports = 2
 
+[tool.flake8]
+# https://flake8.pycqa.org/en/latest/user/configuration.html
+show-source = true
+statistics = false
+max-line-length = 90
+select = ['WPS', 'E99']
+extend-exclude = ['.venv']
+# per-file-ignores = [
+# #     # Enable `assert` for tests
+#     tests/*.py: WPS432
+#
+# [tool.pytest]
+#
+# # https://pypi.org/project/pytest-timeout/
+# timeout = 5
+#
+# xfail_strict = true
+#
+# norecursedirs = *.egg .eggs docs .git __pycache__
+# addopts =
+#     --strict-markers
+#     --strict-config
+#     --doctest-modules
+#     --tb=short
+#     # cov
+#     --cov=src
+#     --cov=tests
+#     --cov-branch
+#     --cov-report
+
 # ---- mypy ----
 # [tool.mypy]
 # python_version = 3.12
@@ -118,4 +198,5 @@ lines_after_imports = 2
 # plugins = pydantic.mypy
 
 
-[tool.codespell]
+[tool.deadcode]
+exclude = [".venv", "tests", "migrations"]
