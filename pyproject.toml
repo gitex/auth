@@ -71,7 +71,7 @@ select = [
   "C4",   # flake8-comprehensions
   "C90",  # maccabe
   "COM",  # flake8-commas
-  "D",    # pydocstyle
+  # "D",    # pydocstyle
   "DTZ",  # flake8-datetimez
   "E",    # pycodestyle
   "ERA",  # flake8-eradicate
@@ -111,6 +111,11 @@ ignore = [
     "E203",
     "PLR6301", # do not require classmethod / staticmethod when self not used
     "E501",
+    "D100", # do not need docstring on top of the file
+    "D104", # do not need package docstrings
+    "ISC001",  # implicit string concat conflicts with `ruff format`
+    "COM812",  # conflict with `rust format`
+    "TRY003",  # Long messages outside exception class
 ]
 external = [ "WPS" ]
 
@@ -124,10 +129,16 @@ line-ending = "lf"
 docstring-code-format = true
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["ANN201"]
-"server/apps/*/migrations/*.py" = ["D101", "E501", "RUF012"]
-"server/common/typing/*.py" = ["F401"]
-"tests/*.py" = ["S101"]
+"migrations/*.py" = ["D101", "E501", "RUF012"]
+"tests/**" = [
+    "ANN201",
+    "S101", # Enable assert in tests
+    "D104", # package docstring
+    "D100", # module docstring
+]
+"test_*.py" = [
+    "D103",  #  do not need doctrings in tests, better have readable test name
+]
 # ---- isort ----
 [tool.isort]
 skip = ["migrations/", "docs/", ".venv/"]
