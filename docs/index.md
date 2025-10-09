@@ -5,5 +5,8 @@
 - [Архитектура](./architecture/overview.md)
 - [API](./api/rest.md)
 
-## Прочее
-- [ADR](./adr/)
+## JWT
+
+- [Описание](./concepts/jwt.md)
+- [Защита](./security/jwt.md)
+
