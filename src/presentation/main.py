@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 from src.infra.config import settings
 
-from src.bootstrap.login import AuthContainer
+from src.bootstrap.wiring import AuthContainer
 
 from src.presentation import api as api_package
 

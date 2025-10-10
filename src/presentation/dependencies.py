@@ -6,7 +6,7 @@ from fastapi import Depends
 from src.application.login import LoginService
 from src.application.register import RegisterService
 
-from src.bootstrap.login import AuthContainer
+from src.bootstrap.wiring import AuthContainer
 
 
 LoginServiceDepend = Annotated[

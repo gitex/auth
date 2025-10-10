@@ -1,5 +1,3 @@
-"""Main conftest.py."""
-
 import os
 from collections.abc import AsyncGenerator, AsyncIterator
 
@@ -20,7 +18,7 @@ from src.infra.orm.session import make_engine
 
 from src.application.register.service import RegisterCommand
 
-from src.bootstrap.login import AuthContainer
+from src.bootstrap import AuthContainer
 
 from src.presentation.main import app, container as main_container
 

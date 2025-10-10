@@ -3,15 +3,15 @@ from uuid import uuid4
 import pytest
 from faker import Faker
 
-from src.infra.claims import Claims, ClaimsFactory
-from src.infra.claims.policies import TokenPolicy
-from src.infra.claims.value_objects import Timestamp
+from src.domain.factories.claims import ClaimsFactory
+
+from src.bootstrap.wiring import AuthContainer
 
 
 @pytest.fixture(scope='session')
-def ts(faker: Faker) -> Timestamp:
+def ts(faker: Faker) -> int:
     """Just random timestamp."""
-    return Timestamp(int(faker.unix_time()))
+    return int(faker.unix_time())
 
 
 @pytest.fixture
@@ -21,27 +21,5 @@ def sub() -> str:
 
 
 @pytest.fixture
-def token_policy() -> TokenPolicy:
-    """Token policy factory."""
-    return TokenPolicy(
-        issuer='test',
-        audience='test',
-    )
-
-
-@pytest.fixture
-def claims_factory(token_policy: TokenPolicy) -> ClaimsFactory:
-    """Claims factory."""
-    return ClaimsFactory(token_policy)
-
-
-@pytest.fixture
-def refresh_claims(claims_factory: ClaimsFactory, sub: str) -> Claims:
-    """Refresh claims factory."""
-    return claims_factory.refresh_claims(sub)
-
-
-@pytest.fixture
-def access_claims(claims_factory: ClaimsFactory, sub: str) -> Claims:
-    """Access claims factory."""
-    return claims_factory.access_claims(sub)
+def claims_factory(container: AuthContainer) -> ClaimsFactory:
+    return container.claims_factory()

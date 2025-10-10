@@ -1,15 +1,13 @@
 from src.domain.policies import Policy
 from src.domain.types import PotentialIssues
-from src.domain.value_objects import Issue, IssueCode, IssueSeverity
-
-from src.infra.claims import Claims
+from src.domain.value_objects import Claims, Issue, IssueCode, IssueSeverity
 
 
 class SubRequiredPolicy(Policy[Claims]):
     """Token should contain 'sub' claim."""
 
     def evaluate(self, ctx: Claims) -> PotentialIssues:
-        if ctx.sub is not None:
+        if ctx.sub is None:
             yield Issue(
                 code=IssueCode.REQUIRED_SUB,
                 severity=IssueSeverity.HIGH,
@@ -21,7 +19,7 @@ class JtiRequiredPolicy(Policy[Claims]):
     """Token should contain 'jti' claim."""
 
     def evaluate(self, ctx: Claims) -> PotentialIssues:
-        if ctx.jti is not None:
+        if ctx.jti is None:
             yield Issue(
                 code=IssueCode.REQUIRED_JTI,
                 severity=IssueSeverity.HIGH,
@@ -33,7 +31,7 @@ class ExpRequiredPolicy(Policy[Claims]):
     """Token should contain 'exp' claim."""
 
     def evaluate(self, ctx: Claims) -> PotentialIssues:
-        if ctx.exp is not None:
+        if ctx.exp is None:
             yield Issue(
                 code=IssueCode.REQUIRED_EXP,
                 severity=IssueSeverity.HIGH,

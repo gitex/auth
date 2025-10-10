@@ -1,32 +1,35 @@
 import time_machine
 
-from src.infra.claims import ClaimsFactory
-from src.infra.claims.policies import TokenPolicy
-from src.infra.claims.value_objects import Timestamp
+from src.domain.factories.claims import ClaimsFactory
+
+from src.bootstrap.wiring import AuthContainer
 
 
 def test_iat_should_be_current_time(
-    token_policy: TokenPolicy, ts: Timestamp, sub: str
+    ts: int,
+    sub: str,
+    claims_factory: ClaimsFactory,
+    container: AuthContainer,
 ) -> None:
-    with time_machine.travel(ts.value, tick=False):
-        factory = ClaimsFactory(token_policy)
+    with time_machine.travel(ts, tick=False):
+        at = claims_factory.access_claims(sub)
+        rt = claims_factory.refresh_claims(sub)
 
-        at = factory.access_claims(sub)
-        rt = factory.refresh_claims(sub)
+    spec = container.token_specification()
 
-    assert at.iss == token_policy.issuer
-    assert at.aud == token_policy.audience
+    assert at.iss == spec.realm.issuer
+    assert at.aud == spec.realm.audience
     assert at.sub == sub
     assert at.iat == ts
     assert at.nbf == ts
-    assert at.exp == ts.add_timedelta(token_policy.access_ttl)
+    assert at.exp == ts + spec.lifetime.access_ttl_seconds
 
-    assert rt.iss == token_policy.issuer
-    assert rt.aud == token_policy.audience
+    assert rt.iss == spec.realm.issuer
+    assert rt.aud == spec.realm.audience
     assert rt.sub == sub
     assert rt.iat == ts
     assert rt.nbf == ts
-    assert rt.exp == ts.add_timedelta(token_policy.refresh_ttl)
+    assert rt.exp == ts + spec.lifetime.refresh_ttl_seconds
 
 
 def test_jti_should_be_unique(claims_factory: ClaimsFactory, sub: str) -> None:
@@ -52,15 +55,16 @@ def test_nbf_should_be_iat_when_not_declared(
     assert rt.iat == rt.nbf
 
 
-def test_nbf_should_affect_exp(
-    token_policy: TokenPolicy, claims_factory: ClaimsFactory, ts: Timestamp, sub: str
-) -> None:
-    nbf = ts.add_seconds(1000)
+def test_nbf_should_affect_exp(ts: int, sub: str, container: AuthContainer) -> None:
+    nbf = ts + 1000
+
+    claims_factory = container.claims_factory()
+    spec = container.token_specification()
 
     at = claims_factory.access_claims(sub, nbf=nbf)
     assert at.nbf == nbf
-    assert at.exp == nbf.add_timedelta(token_policy.access_ttl)
+    assert at.exp == nbf + spec.lifetime.access_ttl_seconds
 
     rt = claims_factory.refresh_claims(sub, nbf=nbf)
     assert rt.nbf == nbf
-    assert rt.exp == nbf.add_timedelta(token_policy.refresh_ttl)
+    assert rt.exp == nbf + spec.lifetime.refresh_ttl_seconds

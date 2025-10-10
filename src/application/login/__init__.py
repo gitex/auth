@@ -1,8 +1,7 @@
-from .service import LoginResult, LoginService, get_login_service
+from .service import LoginResult, LoginService
 
 
 __all__ = [
     'LoginResult',
     'LoginService',
-    'get_login_service',
 ]

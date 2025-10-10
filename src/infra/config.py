@@ -12,12 +12,11 @@ class Jwt(BaseSettings):
     secret_key: SecretStr = SecretStr(
         'Az8H28hPZ25uTCg67BOQRj1KnCiXfJV2pYoQ8bsLVuxVl3JVh16'
     )
-    audience: str = 'auth'
+    audience: list[str] = ['auth']
     issuer: str = 'auth'
-    access_ttl_seconds: int = 60 * 15  # 15 minutes
-    refresh_ttl_seconds: int = 60 * 60 * 24  # 1 day
     access_ttl: timedelta = timedelta(minutes=15)
     refresh_ttl: timedelta = timedelta(days=7)
+    clock_skew: timedelta = timedelta(seconds=30)
 
 
 @injectable

@@ -1,5 +1,4 @@
-from .issue import Decision, Issue, IssueCode, IssueSeverity
-from .value_objects import (
+from .account import (
     TTL,
     AccessToken,
     Email,
@@ -11,11 +10,14 @@ from .value_objects import (
     Role,
     Scope,
 )
+from .claims import Claims, PrivateClaims, RegisteredClaims
+from .issue import Decision, Issue, IssueCode, IssueSeverity
 
 
 __all__ = [
     'TTL',
     'AccessToken',
+    'Claims',
     'Decision',
     'Email',
     'Issue',
@@ -23,9 +25,11 @@ __all__ = [
     'IssueSeverity',
     'Password',
     'PasswordHash',
+    'PrivateClaims',
     'RefreshFamilyId',
     'RefreshSessionId',
     'RefreshToken',
+    'RegisteredClaims',
     'Role',
     'Scope',
 ]

@@ -2,13 +2,6 @@ from dataclasses import dataclass, field
 from datetime import timedelta
 from typing import Literal
 
-from .entities import Claims
-from .errors import TokenError
-
-
-type Errors = list[TokenError]
-type ValidationResult = tuple[bool, Errors]
-
 
 @dataclass
 class TokenPolicy:
@@ -31,21 +24,5 @@ class TokenPolicy:
     require_jti: bool = True
     require_exp: bool = True
 
-    def validate(self, claims: Claims) -> tuple[bool, list[TokenError]]:  # noqa
-        errors: list[TokenError] = []
-
-        if self.require_sub and not claims.sub:
-            errors.append(TokenError.REQUIRED_SUB)
-        if self.require_jti and not claims.jti:
-            errors.append(TokenError.REQUIRED_JTI)
-        if self.require_exp and not claims.exp:
-            errors.append(TokenError.REQUIRED_EXP)
-
-        if claims.aud != self.audience:
-            errors.append(TokenError.WRONG_AUDIENCE)
-        if claims.iss != self.issuer:
-            errors.append(TokenError.WRONG_ISSUER)
-
-        if errors:
-            return False, errors
-        return True, errors
+    def validate(self) -> tuple[bool, list[str]]:
+        return True, []
