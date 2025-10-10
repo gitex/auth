@@ -24,6 +24,16 @@ class JoseJwtServiceImpl(JwtService):
             algorithm=self.key_provider.algorithm(),
         )
 
+    async def _decode_claims(self, token: str, audience: str) -> Claims:
+        raw_claims = jwt.decode(
+            token,
+            self.key_provider.signing_key(),
+            algorithms=[self.key_provider.algorithm()],
+            audience=audience,
+        )
+
+        return Claims(**raw_claims)
+
     async def issue_access(self, account: Account, scopes: list[Scope]) -> AccessToken:
         claims = self.claims_factory.access_claims(sub=str(account.identifier))
         token = await self._encode_claims(claims)
@@ -33,5 +43,3 @@ class JoseJwtServiceImpl(JwtService):
         claims = self.claims_factory.refresh_claims(sub=str(account.identifier))
         token: str = await self._encode_claims(claims)
         return RefreshToken(token)
-
-    async def verify_access(self, access_token: AccessToken) -> Account | None: ...

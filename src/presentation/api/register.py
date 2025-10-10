@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from dependency_injector.wiring import inject
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, EmailStr, SecretStr
@@ -8,18 +10,25 @@ from src.application.exceptions import PasswordPolicyError
 from src.application.register import RegisterCommand
 
 from src.presentation.dependencies import RegisterServiceDepend
+from src.presentation.validators import StrNotEmptyValidator
 
 
 router = APIRouter(tags=['authorization'])
 
 
 class RegisterIn(BaseModel):
-    email: EmailStr
-    password: SecretStr
+    """Registration input.
+
+    Do not put policies and business logic here, it's domain responsibility.
+    """
+
+    email: Annotated[EmailStr, StrNotEmptyValidator]
+    password: Annotated[SecretStr, StrNotEmptyValidator]
 
 
 class RegisterOut(BaseModel):
     detail: str
+    user_id: str
 
 
 @router.post('/register')
@@ -31,11 +40,14 @@ async def register(body: RegisterIn, service: RegisterServiceDepend) -> Register
     )
 
     try:
-        await service.register(cmd)
+        result = await service.register(cmd)
     except PasswordPolicyError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
         ) from e
 
-    return RegisterOut(detail='Account created successfully! You can login now.')
+    return RegisterOut(
+        detail='Account created successfully! You can login now.',
+        user_id=str(result.account.identifier),
+    )
