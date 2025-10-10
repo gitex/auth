@@ -10,3 +10,6 @@
 - [Описание](./concepts/jwt.md)
 - [Защита](./security/jwt.md)
 
+## Experiment Log
+
+- [Claim как Value Object](./experiment_logs/claims_with_vo.md)
