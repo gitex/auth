@@ -17,6 +17,7 @@ from src.infra.orm.models.base import Base
 from src.infra.orm.session import make_engine
 
 from src.application.register.service import RegisterCommand
+from src.application.uow import UnitOfWork
 
 from src.bootstrap import AuthContainer
 
@@ -49,7 +50,7 @@ def db_url(conf: Settings) -> str:
 
 
 @pytest.fixture(scope='session')
-def anyio_backend():
+def anyio_backend() -> str:
     """Mode for pytest-asyncio."""
     return 'asyncio'
 
@@ -93,14 +94,25 @@ def container(conf: Settings, async_engine: AsyncEngine) -> AuthContainer:
     return main_container
 
 
-@pytest.fixture(scope='session')
-def password() -> str:
+@pytest.fixture
+def email(faker: Faker) -> str:
+    return faker.email()
+
+
+@pytest.fixture
+def password(faker: Faker) -> str:
     """Valid password for registration."""
-    return 'Test123!'
+    return faker.password(
+        length=10,
+        digits=True,
+        lower_case=True,
+        upper_case=True,
+        special_chars=True,
+    )
 
 
 @pytest_asyncio.fixture(scope='session', autouse=True)
-async def database(db_url: str):
+async def database(db_url: str) -> AsyncGenerator[None]:
     """Test database controller."""
     await create_database(db_url)
 
@@ -116,7 +128,7 @@ async def database(db_url: str):
 
 
 @pytest_asyncio.fixture
-async def uow(container: AuthContainer):
+async def uow(container: AuthContainer) -> AsyncGenerator[UnitOfWork]:
     """Unit of Work from container.
 
     Main idea is build services close as possible to real conditions.

@@ -8,25 +8,7 @@ from src.domain.value_objects import Email
 
 from src.application.uow import UnitOfWork
 
-from tests.urls import URLS
-
-
-INVALID_EMAILS = [
-    ('plainaddress', 'missing @'),
-    ('@example.com', 'missing local part'),
-    ('john.doe@', 'missing domain'),
-    ('john..doe@example.com', 'double dot in local'),
-    ('.john@example.com', 'local starts with dot'),
-    ('john.@example.com', 'local ends with dot'),
-    ('jo hn@example.com', 'space in local'),
-    ('john,doe@example.com', 'comma in local'),
-    ('john@exa mple.com', 'space in domain'),
-    ('john@-example.com', "label starts with '-'"),
-    ('john@example-.com', "label ends with '-'"),
-    ('john@example..com', 'double dot in domain'),
-    ('john@example', 'no public TLD'),
-    ('john@123', 'numeric host, no TLD'),
-]
+from tests import INVALID_EMAILS, URLS
 
 
 def register_data(email: str, password: str):
@@ -47,7 +29,9 @@ async def test_register_by_valid_email_and_password(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('email', INVALID_EMAILS)
-async def test_register_by_invalid_email(client: AsyncClient, password: str, email: str):
+@pytest.mark.parametrize(('email', 'reason'), INVALID_EMAILS)
+async def test_register_by_invalid_email(
+    client: AsyncClient, password: str, email: str, reason: str
+):
     r = await client.post(URLS.register, json=register_data(email, password))
-    assert r.status_code == HTTPStatus.UNPROCESSABLE_ENTITY, r.json()
+    assert r.status_code == HTTPStatus.UNPROCESSABLE_ENTITY, reason
