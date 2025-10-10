@@ -8,6 +8,7 @@ from src.infra.config import settings
 from src.bootstrap.wiring import AuthContainer
 
 from src.presentation import api as api_package
+from src.presentation.exception_handlers import add_custom_exception_handlers
 
 from .api.login import router as login_router
 from .api.register import router as register_router
@@ -32,6 +33,8 @@ def create_app() -> FastAPI:
 
     app.include_router(login_router)
     app.include_router(register_router)
+
+    add_custom_exception_handlers(app)
 
     return app
 
