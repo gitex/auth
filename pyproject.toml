@@ -32,10 +32,12 @@ dev = [
     "mypy>=1.18.2",
     "pre-commit>=4.3.0",
     "pytest>=8.4.2",
+    "pytest-alembic>=0.12.1",
     "pytest-async>=0.1.1",
     "pytest-asyncio>=1.2.0",
     "pytest-cov>=7.0.0",
     "pytest-pretty>=1.3.0",
+    "pytest-sugar>=1.1.1",
     "pytest-testmon>=2.1.3",
     "pytest-timeout>=2.4.0",
     "pytest-watch>=4.2.0",
@@ -48,14 +50,15 @@ dev = [
     "wemake-python-styleguide>=1.4.0",
 ]
 
-# ---- basedpyright ----
+
+# ==== BasedPyright ===== (https://docs.basedpyright.com/v1.20.0/configuration/config-files/)
 [tool.basedpyright]
 include = ["src"]
 pythonVersion = "3.12"
 
-# ---- ruff ----
+
+# ==== Ruff ==== (https://docs.astral.sh/ruff/settings)
 [tool.ruff]
-# Ruff config: https://docs.astral.sh/ruff/settings
 src = ["src"]
 preview = true
 fix = true
@@ -132,16 +135,21 @@ docstring-code-format = true
 
 [tool.ruff.lint.per-file-ignores]
 "migrations/*.py" = ["D101", "E501", "RUF012"]
+"*/presentation/exception_handlers*" = [
+    "RUF029",  # FastAPI exception handlers can be awaitable, but may not use async futures
+]
 "tests/**" = [
-    "ANN201",
     "S101", # Enable assert in tests
-    "D104", # package docstring
-    "D100", # module docstring
+    "D104", # Package docstring not needed in tests (at least for now)
+    "D100", # Module docstring not needed in tests (at least for now)
+    "S105",  # Allow hardcoded passwords in tests, it's not security leak
 ]
 "test_*.py" = [
-    "D103",  #  do not need doctrings in tests, better have readable test name
+    "ANN201",  # Tests do not need to have return type, they rarely return something
 ]
-# ---- isort ----
+
+
+# ==== Isort ====
 [tool.isort]
 skip = ["migrations/", "docs/", ".venv/"]
 profile = "black"
@@ -169,47 +177,16 @@ sections = [
 ]
 lines_after_imports = 2
 
+
+# ==== Flake8 ==== (https://flake8.pycqa.org/en/latest/user/configuration.html)
 [tool.flake8]
-# https://flake8.pycqa.org/en/latest/user/configuration.html
 show-source = true
 statistics = false
 max-line-length = 90
 select = ['WPS', 'E99']
 extend-exclude = ['.venv']
-# per-file-ignores = [
-# #     # Enable `assert` for tests
-#     tests/*.py: WPS432
-#
-# [tool.pytest]
-#
-# # https://pypi.org/project/pytest-timeout/
-# timeout = 5
-#
-# xfail_strict = true
-#
-# norecursedirs = *.egg .eggs docs .git __pycache__
-# addopts =
-#     --strict-markers
-#     --strict-config
-#     --doctest-modules
-#     --tb=short
-#     # cov
-#     --cov=src
-#     --cov=tests
-#     --cov-branch
-#     --cov-report
-
-# ---- mypy ----
-# [tool.mypy]
-# python_version = 3.12
-# warn_unused_ignores = True
-# warn_redundant_casts = True
-# warn_return_any = True
-# disallow_untyped_defs = True
-# no_implicit_optional = True
-# exclude = (^migrations/versions/)
-# plugins = pydantic.mypy
 
 
+# ==== Deadcode ==== (not implemented, runs manually)
 [tool.deadcode]
 exclude = [".venv", "tests", "migrations"]
