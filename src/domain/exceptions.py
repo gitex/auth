@@ -1,19 +1,14 @@
-from src.exceptions import MicroserviceError
+from src.exceptions import BaseMicroserviceError
 
 
-class DomainError(MicroserviceError): ...
+class BaseDomainError(BaseMicroserviceError): ...
 
 
-class ValidationError(DomainError):
+class ValidationError(BaseDomainError):
     code = 'validation_error'
-    message = 'Invalid value'
+    message = 'Expected different value'
 
 
 class ShouldBePositiveError(ValidationError):
     code = 'value_should_be_positive'
     message = 'Value should be positive'
-
-
-class InvalidCredentialsError(DomainError):
-    code = 'invalid_credentials'
-    message = 'Invalid credentials'

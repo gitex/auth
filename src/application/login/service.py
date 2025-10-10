@@ -20,18 +20,28 @@ class LoginService:
     jwt_service: JwtService
 
     async def login(self, email: Email, password: Password) -> LoginResult:
-        """Авторизует пользователя.
-
-        :raise InvalidCredentialsError:
-        :raise InvalidClaimsError:
         """
+        Authorize user from email and password.
+
+        Args:
+            email: User email
+            password: User password
+
+        Returns:
+            Access and refresh token
+
+        Raises:
+            InvalidCredentialsError: Email or password is not valid
+        """
+
         async with self.uow as uow:
             account = await uow.accounts.get_by_email(email)
 
-        if not account or not await self.password_hasher.verify(
-            password, account.password_hash
-        ):
-            raise InvalidCredentialsError({'email': email})
+        if not account:
+            raise InvalidCredentialsError('Account does not found', ctx={'email': email})
+
+        if not await self.password_hasher.verify(password, account.password_hash):
+            raise InvalidCredentialsError('Incorrect password', ctx={'email': email})
 
         access_token = await self.jwt_service.issue_access(account, scopes=[])
         refresh_token = await self.jwt_service.issue_refresh(account)

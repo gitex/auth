@@ -1,19 +1,19 @@
-from src.exceptions import MicroserviceError
+from src.exceptions import BaseMicroserviceError
 
 
-class ApplicationError(MicroserviceError): ...  # Ошибка уровня application/
+class BaseApplicationError(BaseMicroserviceError): ...  # Ошибка уровня application/
 
 
-class InvalidCredentialsError(ApplicationError):
+class InvalidCredentialsError(BaseApplicationError):
     code = 'invalid_credentials'
     message = 'Email or password not valid.'
 
 
-class AccountAlreadyExistsError(ApplicationError):
+class AccountAlreadyExistsError(BaseApplicationError):
     code = 'account_already_exists'
     message = 'Account with this email already registered.'
 
 
-class PasswordPolicyError(ApplicationError):
+class PasswordPolicyError(BaseApplicationError):
     code = 'password_policy_error'
     message = 'Password does not comply with policy.'

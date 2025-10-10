@@ -11,7 +11,7 @@ def value_should_be_positive(value: int) -> None:
     :raise ValueError
     """
     if value < 0:
-        raise ShouldBePositiveError({'value': value})
+        raise ShouldBePositiveError(ctx={'value': value})
 
 
 @dataclass(frozen=True, slots=True)

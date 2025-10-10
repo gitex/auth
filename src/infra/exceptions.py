@@ -1,9 +1,9 @@
-from src.exceptions import MicroserviceError
+from src.exceptions import BaseMicroserviceError
 
 
-class InfrastructureError(MicroserviceError): ...
+class BaseInfrastructureError(BaseMicroserviceError): ...
 
 
-class InvalidClaimsError(InfrastructureError):
+class InvalidClaimsError(BaseInfrastructureError):
     code = 'invalid_claims'
-    message = 'Presented claims are not valid'
+    message = 'Claims are not valid'
