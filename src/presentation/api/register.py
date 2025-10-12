@@ -6,8 +6,8 @@ from pydantic import BaseModel, EmailStr, SecretStr
 
 from src.domain.value_objects import Email, Password
 
+from src.application import RegisterCommand
 from src.application.exceptions import PasswordPolicyError
-from src.application.register import RegisterCommand
 
 from src.presentation.dependencies import RegisterServiceDepend
 from src.presentation.validators import StrNotEmptyValidator

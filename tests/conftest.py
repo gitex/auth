@@ -16,8 +16,7 @@ from src.infra.config import Settings, settings
 from src.infra.orm.models.base import Base
 from src.infra.orm.session import make_engine
 
-from src.application.register.service import RegisterCommand
-from src.application.uow import UnitOfWork
+from src.application import RegisterCommand, UnitOfWork
 
 from src.bootstrap import AuthContainer
 

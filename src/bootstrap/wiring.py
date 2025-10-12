@@ -10,9 +10,7 @@ from src.infra.jwt_service.jose import JoseJwtServiceImpl
 from src.infra.key_provider import HS256KeyProviderImpl
 from src.infra.orm.session import make_async_session_factory, make_engine
 
-from src.application.login.service import LoginService
-from src.application.register.service import RegisterService
-from src.application.uow import SqlAlchemyUoW
+from src.application import LoginService, RegisterService, SqlAlchemyUoW
 
 
 class AuthContainer(containers.DeclarativeContainer):

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 from jose import jwt
 
@@ -6,6 +7,7 @@ from src.domain.entities import Account
 from src.domain.factories import ClaimsFactory
 from src.domain.ports import JwtService
 from src.domain.value_objects import AccessToken, Claims, RefreshToken, Scope
+from src.domain.value_objects.token import TokenSpecification
 
 from src.infra.key_provider import KeyProvider
 
@@ -16,6 +18,7 @@ class JoseJwtServiceImpl(JwtService):
 
     claims_factory: ClaimsFactory
     key_provider: KeyProvider
+    spec: TokenSpecification
 
     async def _encode_claims(self, claims: Claims) -> str:
         return jwt.encode(
@@ -25,7 +28,7 @@ class JoseJwtServiceImpl(JwtService):
         )
 
     async def _decode_claims(self, token: str, audience: str) -> Claims:
-        raw_claims = jwt.decode(
+        raw_claims: dict[str, Any] = jwt.decode(
             token,
             self.key_provider.signing_key(),
             algorithms=[self.key_provider.algorithm()],

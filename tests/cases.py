@@ -15,6 +15,7 @@ INVALID_EMAILS = [
     ('john@123', 'numeric host, no TLD'),
 ]
 
+
 INVALID_PASSWORDS = [
     ('a', 'too short'),
     # TODO: добавить примеры после Password Policy

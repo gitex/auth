@@ -53,8 +53,9 @@ dev = [
 
 # ==== BasedPyright ===== (https://docs.basedpyright.com/v1.20.0/configuration/config-files/)
 [tool.basedpyright]
-include = ["src"]
-pythonVersion = "3.12"
+# include = ["src", "tests"]
+# pythonVersion = "3.12"
+# venv = ".venv"
 
 
 # ==== Ruff ==== (https://docs.astral.sh/ruff/settings)

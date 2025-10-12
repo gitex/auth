@@ -3,8 +3,7 @@ from typing import Annotated
 from dependency_injector.wiring import Provide
 from fastapi import Depends
 
-from src.application.login import LoginService
-from src.application.register import RegisterService
+from src.application import LoginService, RegisterService
 
 from src.bootstrap.wiring import AuthContainer
 

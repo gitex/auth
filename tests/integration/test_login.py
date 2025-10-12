@@ -5,8 +5,6 @@ from httpx import AsyncClient
 
 from src.domain.entities import Account
 
-from src.bootstrap import AuthContainer
-
 from tests import INVALID_EMAILS, URLS, parse_unprocessable_entity_response
 
 
@@ -15,7 +13,9 @@ def request_json(email: str, password: str) -> dict[str, str]:
 
 
 async def test_successful_login(
-    client: AsyncClient, account: Account, password: str, container: AuthContainer
+    client: AsyncClient,
+    account: Account,
+    password: str,
 ):
     """User with valid email and password.
 
