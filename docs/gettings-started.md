@@ -55,6 +55,16 @@ alias для `sudo docker compose ps`
 alias для `sudo docker logs -f <target>`
 
 
+## Tmux
+
+В проекте есть запуск через tmux, который автоматизирует развертку еще больше:
+```bash
+just dev
+```
+- Запускает `deps` (зависимости)
+- Запускает [`tmux`](../.tmuxp.yml) с 4 вкладками (windows)
+- После работы - оставливает зависимости и сам сервис
+
 ## FAQ
 
 #### Q: Запускаю justfile, но Docker требует sudo
