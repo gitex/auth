@@ -53,3 +53,16 @@ alias для `sudo docker compose ps`
 ### just logs <target>
 
 alias для `sudo docker logs -f <target>`
+
+
+## FAQ
+
+#### Q: Запускаю justfile, но Docker требует sudo
+
+**A:** https://docs.docker.com/engine/install/linux-postinstall/
+
+```bash
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+```
