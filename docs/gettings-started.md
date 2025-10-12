@@ -33,7 +33,7 @@ just up service
 Действия:
 
 - **just up <profile>**: запускает docker compose по profile. По умолчанию - `profile=dependencies`
-- **just up dependencies**: запускает зависимости проекта (database, kafka, redis)
+- **just up deps**: запускает зависимости проекта (database, kafka, redis)
 - **just up service**: запускает микросервис в Docker
 
 ### just down
@@ -43,7 +43,7 @@ just up service
 Действия:
 
 - **just down**: останавливает docker compose по profile. По умолчанию - `profile=dependencies`
-- **just down dependencies**: останавливает зависимости проекта (database, kafka, redis)
+- **just down deps**: останавливает зависимости проекта (database, kafka, redis)
 - **just down service**: останавливает микросервис в Docker
 
 ### just ps
