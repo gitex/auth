@@ -45,6 +45,9 @@ rebuild:
     docker compose build auth
     just up {{ docker_service_profile }}
 
+test:
+    pytest . -x
+
 # Пересобрать .venv
 venv:
     uv venv --clear

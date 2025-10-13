@@ -64,6 +64,7 @@ class AuthContainer(containers.DeclarativeContainer):
         JoseJwtServiceImpl,
         key_provider=key_provider,
         claims_factory=claims_factory,
+        spec=token_specification,
     )
 
     login_service = providers.Factory(

@@ -13,9 +13,6 @@ class MeOut(BaseModel):
     is_active: bool
 
 
-raise ExceptionGroup
-
-
 @router.get('/me')
 async def handler() -> MeOut:
     return MeOut(id=uuid4(), email='a@b.c', is_active=True)

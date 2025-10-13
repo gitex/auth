@@ -23,12 +23,22 @@ windows:
       - shell_command:
           -
 
-  - window_name: empty
+  - window_name: tests
     panes:
       - shell_command:
-          - pytest .
+          - cmd: just test
+            enter: false
 
-  - window_name: empty
+  - window_name: monitoring
+    layout: tiled
     panes:
       - shell_command:
           - just up service
+          - sleep 0.2
+          - just logs auth
+      - shell_command:
+          - just logs auth-db
+      - shell_command:
+          - just logs kafka
+      - shell_command:
+          - just logs redis
