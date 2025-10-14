@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Protocol
 from uuid import UUID
 
+from src.domain.events import DomainEvent
 from src.domain.value_objects import (
     TTL,
     AccessToken,
@@ -50,3 +51,7 @@ class AccountRepository(Protocol):
     async def get_by_email(self, email: Email) -> Account | None: ...
     async def get_by_id(self, account_id: UUID) -> Account | None: ...
     async def create(self, account: Account) -> Account: ...
+
+
+class DomainEventPublisher(Protocol):
+    async def publish(self, event: DomainEvent) -> None: ...

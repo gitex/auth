@@ -6,6 +6,7 @@ from sqlalchemy import Enum, Index, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
+from src.infra.dto import OutboxDto
 from src.infra.orm.models.base import Base
 
 
@@ -17,7 +18,8 @@ class OutboxStatus(StrEnum):
     DLQ = 'dql'
 
 
-PUBLISH_STATUSES = [OutboxStatus.NEW, OutboxStatus.FAILED]
+# This affects index, change it carefully
+READY_FOR_PUBLISH_STATUSES = [OutboxStatus.NEW, OutboxStatus.FAILED]
 
 
 class Outbox(Base):
@@ -42,7 +44,7 @@ class Outbox(Base):
         Index(
             'ix_partial_next_retry_at',
             'next_retry_at',
-            postgresql_where=(status.in_(PUBLISH_STATUSES)),
+            postgresql_where=(status.in_(READY_FOR_PUBLISH_STATUSES)),
             postgresql_using='btree',
         ),
     )
@@ -50,3 +52,20 @@ class Outbox(Base):
     @override
     def __repr__(self) -> str:
         return f'Outbox #{self.id}, status={self.status.value}'
+
+    @classmethod
+    def from_dto(cls, outbox_dto: OutboxDto) -> 'Outbox':
+        return cls(
+            id=outbox_dto.id,
+            topic=outbox_dto.topic,
+            payload=outbox_dto.payload,
+            headers=outbox_dto.headers,
+        )
+
+    def to_dto(self) -> OutboxDto:
+        return OutboxDto(
+            id=self.id,
+            topic=self.topic,
+            payload=self.payload,
+            headers=self.headers or {},
+        )

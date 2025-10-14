@@ -1,8 +1,7 @@
-from dataclasses import dataclass
 from types import TracebackType
-from typing import Protocol, Self
+from typing import Protocol, Self, override
 
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, AsyncSessionTransaction
 
 from src.domain.ports import AccountRepository
 
@@ -11,7 +10,6 @@ from src.infra.repositories.account.db import DbAccountRepositoryImpl
 
 
 class UnitOfWork(Protocol):
-    session: AsyncSession  # TODO: Грязновато, реализация пролезла в протокол
     accounts: AccountRepository
 
     async def __aenter__(self) -> Self: ...
@@ -25,35 +23,39 @@ class UnitOfWork(Protocol):
     async def rollback(self) -> None: ...
 
 
-@dataclass
 class SqlAlchemyUoW(UnitOfWork):
-    session_factory: SessionFactory
+    def __init__(self, session_factory: SessionFactory) -> None:
+        self._session_factory = session_factory
 
+    @override
     async def __aenter__(self) -> Self:
-        self.session = self.session_factory()
-        self.accounts = DbAccountRepositoryImpl(self.session)
+        self._session: AsyncSession = self._session_factory()
+
+        self._transaction: AsyncSessionTransaction = self._session.begin()
+        await self._transaction.__aenter__()
+        self.accounts: AccountRepository = DbAccountRepositoryImpl(self._session)
         return self
 
+    @override
     async def __aexit__(
         self,
         exc_type: type[BaseException] | None,
         exc: BaseException | None,
         tb: TracebackType | None,
     ) -> None:
-        if not self.session:
+        if not self._session.begin():
             return
 
         try:
-            if exc_type:
-                await self.rollback()
-            else:
-                await self.commit()
+            await self._transaction.__aexit__(exc_type, exc, tb)
 
         finally:
-            await self.session.close()
+            await self._session.close()
 
+    @override
     async def commit(self) -> None:
-        await self.session.commit()
+        await self._session.commit()
 
+    @override
     async def rollback(self) -> None:
-        await self.session.rollback()
+        await self._session.rollback()

@@ -1,3 +1,4 @@
+from typing import final, override
 from uuid import UUID
 
 from sqlalchemy import select
@@ -11,10 +12,12 @@ from src.infra.mappers import account_db_to_account, account_to_account_db
 from src.infra.orm.models import Account as AccountModel
 
 
+@final
 class DbAccountRepositoryImpl(AccountRepository):
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
+    @override
     async def get_by_email(self, email: Email) -> Account | None:
         stmt = select(AccountModel).where(AccountModel.email == email.value)
         account_db: AccountModel | None = (
@@ -26,6 +29,7 @@ class DbAccountRepositoryImpl(AccountRepository):
 
         return account_db_to_account(account_db)
 
+    @override
     async def get_by_id(self, account_id: UUID) -> Account | None:
         account_db = await self.session.get(AccountModel, account_id)
 
@@ -34,6 +38,7 @@ class DbAccountRepositoryImpl(AccountRepository):
 
         return account_db_to_account(account_db)
 
+    @override
     async def create(self, account: Account) -> Account:
         account_db = account_to_account_db(account)
         self.session.add(account_db)

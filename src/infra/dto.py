@@ -51,7 +51,7 @@ class ClaimsDto:
 
     def as_dict(self, *, exclude_none: bool = False) -> dict[str, tp.Any]:
         """Form dict and exclude empty claims."""
-        output = {}
+        output: dict[str, tp.Any] = {}
 
         for key, value in asdict(self).items():
             if exclude_none and value is None:
@@ -60,3 +60,11 @@ class ClaimsDto:
             output[key] = value
 
         return output
+
+
+@dataclass(frozen=True, slots=True)
+class OutboxDto:
+    topic: str
+    headers: dict[str, tp.Any]
+    payload: dict[str, tp.Any]
+    id: int | None = None

@@ -1,8 +1,9 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from src.domain.entities import Account
+from src.domain.events import UserRegistered
 from src.domain.policies.password import PasswordPolicy
-from src.domain.ports import PasswordHasher
+from src.domain.ports import DomainEventPublisher, PasswordHasher
 from src.domain.value_objects import Email, Password
 
 from src.application.exceptions import (
@@ -28,6 +29,7 @@ class RegisterService:
     uow: UnitOfWork
     password_hasher: PasswordHasher
     password_policy: PasswordPolicy
+    event_publishers: list[DomainEventPublisher] = field(default_factory=list)
 
     async def register(self, cmd: RegisterCommand) -> RegisterResult:
         async with self.uow as uow:
@@ -51,5 +53,13 @@ class RegisterService:
                     roles=[],  # TODO: Обновить после добавления ролей
                 )
             )
+
+            event = UserRegistered(
+                user_id=account.identifier,
+                email=account.email,
+            )
+
+            for event_publisher in self.event_publishers:
+                await event_publisher.publish(event)
 
         return RegisterResult(account=account)
