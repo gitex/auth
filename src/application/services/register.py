@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 
 from src.domain.entities import Account
-from src.domain.events import UserRegistered
-from src.domain.policies.password import PasswordPolicy
+from src.domain.events import AccountRegistered
+from src.domain.policies.password import PasswordPolicySuite
 from src.domain.ports import DomainEventPublisher, PasswordHasher
 from src.domain.value_objects import Email, Password
 
@@ -19,16 +19,16 @@ class RegisterCommand:
     password: Password
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class RegisterResult:
     account: Account
 
 
-@dataclass
+@dataclass(frozen=True)
 class RegisterService:
     uow: UnitOfWork
     password_hasher: PasswordHasher
-    password_policy: PasswordPolicy
+    password_policies_suite: PasswordPolicySuite
     event_publishers: list[DomainEventPublisher] = field(default_factory=list)
 
     async def register(self, cmd: RegisterCommand) -> RegisterResult:
@@ -38,9 +38,11 @@ class RegisterService:
         if account:
             raise AccountAlreadyExistsError(ctx={'email': cmd.email})
 
-        ok, errors = self.password_policy.validate(cmd.password)
-        if not ok:
-            raise PasswordPolicyError(ctx={'errors': errors})
+        if self.password_policies_suite:
+            ok, errors = self.password_policies_suite.validate(cmd.password)
+
+            if not ok:
+                raise PasswordPolicyError(ctx={'errors': errors})
 
         async with self.uow as uow:
             account = await uow.accounts.create(
@@ -54,10 +56,7 @@ class RegisterService:
                 )
             )
 
-            event = UserRegistered(
-                user_id=account.identifier,
-                email=account.email,
-            )
+            event = AccountRegistered.from_account(account)
 
             for event_publisher in self.event_publishers:
                 await event_publisher.publish(event)

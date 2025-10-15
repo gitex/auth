@@ -1,7 +1,6 @@
-from collections.abc import Callable
-from dataclasses import dataclass
-from datetime import timedelta
+from collections.abc import Iterable
 from enum import Enum
+from typing import Protocol, final, override
 
 from src.domain.value_objects import Password
 
@@ -13,52 +12,107 @@ class PasswordError(Enum):
     REQUIRE_UPPER = 'require_upper'
     REQUIRE_DIGIT = 'require_digit'
     REQUIRE_SYMBOL = 'require_symbol'
+    FORBIDDEN_WORD = 'forbidden_word'
 
 
 SYMBOLS = set(r"!@#$%^&*()-_=+[]{};:'\",.<>/?\|`~")
 
 
-@dataclass(frozen=True)
-class PasswordPolicy:
-    min_length: int = 10
-    max_length: int = 100
+class PasswordPolicy(Protocol):
+    code: PasswordError
 
-    require_lower: bool = True
-    require_upper: bool = True
-    require_digit: bool = True
-    require_symbol: bool = True
+    def error_message(self) -> str: ...
+    def validate(self, password: Password) -> bool: ...
 
-    max_repeats: int = 3  # "aaaa"
-    max_sequential: int = 4  # "abcd" | "1234"
 
-    blacklist: frozenset[str] = frozenset({'password', 'qwerty', '12345'})
+@final
+class PasswordPolicySuite:
+    def __init__(self, policies: Iterable[PasswordPolicy]) -> None:
+        self._policies = policies
 
-    expires_in: timedelta = timedelta(days=365)
-
-    def validate(self, password: Password) -> tuple[bool, list[str]]:  # noqa
+    def validate(self, password: Password) -> tuple[bool, list[str]]:
         errors: list[str] = []
 
-        n = len(password)
+        for policy in self._policies:
+            is_valid = policy.validate(password)
 
-        if n < self.min_length:
-            errors.append(
-                f"Password's length should not be less then {self.min_length}"
-            )  # Строки надо куда-то выносить
-        if n > self.max_length:
-            errors.append(f"Password's length should not be more then {self.max_length}")
-
-        def password_has(f: Callable[[str], bool]) -> bool:
-            return any(f(c) for c in password)
-
-        if self.require_lower and not password_has(str.islower):
-            errors.append('Password should contain lowercase letter')
-        if self.require_upper and not password_has(str.isupper):
-            errors.append('Password should contain uppercase letter')
-        if self.require_digit and not password_has(str.isdigit):
-            errors.append('Password should contain digit')
-        if self.require_symbol and not any(c in SYMBOLS for c in password):
-            errors.append('Password should contain any of special symbols')
+            if not is_valid:
+                errors.append(policy.error_message())
 
         if errors:
             return False, errors
         return True, errors
+
+
+@final
+class PasswordContainUpperacacePolicy(PasswordPolicy):
+    code: PasswordError = PasswordError.REQUIRE_UPPER
+
+    @override
+    def validate(self, password: Password) -> bool:
+        return password.any_of_characters(str.isupper)
+
+    @override
+    def error_message(self) -> str:
+        return 'Password should contain uppercase letter'
+
+
+@final
+class PasswordContainLowercasePolicy(PasswordPolicy):
+    code: PasswordError = PasswordError.REQUIRE_LOWER
+
+    @override
+    def validate(self, password: Password) -> bool:
+        return password.any_of_characters(str.islower)
+
+    @override
+    def error_message(self) -> str:
+        return 'Password should contain lowercase letter'
+
+
+@final
+class PasswordMinLengthPolicy(PasswordPolicy):
+    code: PasswordError = PasswordError.TOO_SHORT
+
+    def __init__(self, min_length: int) -> None:
+        self._min_length = min_length
+
+    @override
+    def validate(self, password: Password) -> bool:
+        return len(password) > self._min_length
+
+    @override
+    def error_message(self) -> str:
+        return f'Password should be more than {self._min_length} symbols.'
+
+
+@final
+class PasswordMaxLengthPolicy(PasswordPolicy):
+    code: PasswordError = PasswordError.TOO_LONG
+
+    def __init__(self, max_length: int) -> None:
+        self._max_length = max_length
+
+    @override
+    def validate(self, password: Password) -> bool:
+        return len(password) < self._max_length
+
+    @override
+    def error_message(self) -> str:
+        return f'Password should not be more than {self._max_length} symbols'
+
+
+@final
+class PasswordNotInBlacklistPolicy(PasswordPolicy):
+    code: PasswordError = PasswordError.FORBIDDEN_WORD
+
+    def __init__(self, blacklist: set[str]) -> None:
+        self._blacklist = blacklist
+
+    @override
+    def validate(self, password: Password) -> bool:
+        return password.value in self._blacklist
+
+    @override
+    def error_message(self) -> str:
+        return 'Password is too simple'

@@ -1,7 +1,7 @@
 from types import TracebackType
-from typing import Protocol, Self, override
+from typing import Protocol, Self, final, override
 
-from sqlalchemy.ext.asyncio import AsyncSession, AsyncSessionTransaction
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.domain.ports import AccountRepository
 
@@ -23,16 +23,15 @@ class UnitOfWork(Protocol):
     async def rollback(self) -> None: ...
 
 
+@final
 class SqlAlchemyUoW(UnitOfWork):
     def __init__(self, session_factory: SessionFactory) -> None:
         self._session_factory = session_factory
+        self._session: AsyncSession | None = None
 
     @override
     async def __aenter__(self) -> Self:
         self._session: AsyncSession = self._session_factory()
-
-        self._transaction: AsyncSessionTransaction = self._session.begin()
-        await self._transaction.__aenter__()
         self.accounts: AccountRepository = DbAccountRepositoryImpl(self._session)
         return self
 
@@ -47,7 +46,10 @@ class SqlAlchemyUoW(UnitOfWork):
             return
 
         try:
-            await self._transaction.__aexit__(exc_type, exc, tb)
+            if exc_type:
+                await self.rollback()
+            else:
+                await self.commit()
 
         finally:
             await self._session.close()

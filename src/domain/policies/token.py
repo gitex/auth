@@ -1,4 +1,6 @@
-from src.domain.policies import Policy
+from typing import final, override
+
+from src.domain.policies.base import Policy
 from src.domain.types import PotentialIssues
 from src.domain.value_objects import Claims, Issue, IssueCode, IssueSeverity
 
@@ -39,6 +41,7 @@ class ExpRequiredPolicy(Policy[Claims]):
             )
 
 
+@final
 class NotExpiredPolicy(Policy[Claims]):
     """Token should not be expired."""
 
@@ -46,6 +49,7 @@ class NotExpiredPolicy(Policy[Claims]):
         self.now = now
         self.skew = skew
 
+    @override
     def evaluate(self, ctx: Claims) -> PotentialIssues:
         if ctx.exp is None:
             yield Issue(

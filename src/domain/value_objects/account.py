@@ -1,4 +1,4 @@
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from datetime import timedelta
 
@@ -71,6 +71,9 @@ class Password:
 
     def __iter__(self) -> Iterator[str]:
         yield from iter(self.value)
+
+    def any_of_characters(self, f: Callable[[str], bool]) -> bool:
+        return any(f(c) for c in self.value)
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,4 +1,4 @@
-from typing import Protocol, TypeVar, runtime_checkable
+from typing import Protocol, TypeVar, final
 
 from src.domain.types import PotentialIssues
 from src.domain.value_objects import Decision, Issue
@@ -7,7 +7,6 @@ from src.domain.value_objects import Decision, Issue
 Ctx = TypeVar('Ctx')
 
 
-@runtime_checkable
 class Policy[Ctx](Protocol):
     """Policy of business operation.
 
@@ -27,7 +26,8 @@ class Policy[Ctx](Protocol):
     def evaluate(self, ctx: Ctx) -> PotentialIssues: ...
 
 
-class PolicySuite(Policy[Ctx]):
+@final
+class PolicySuite[Ctx]:
     """Suite of policies.
 
     Usage:
@@ -41,7 +41,7 @@ class PolicySuite(Policy[Ctx]):
     suite.decide(claims)
     """
 
-    def __init__(self, *policies: Policy) -> None:
+    def __init__(self, *policies: Policy[Ctx]) -> None:
         self._policies = policies
 
     def decide(self, ctx: Ctx) -> Decision:

@@ -1,7 +1,16 @@
-from dependency_injector import containers, providers
+from typing import final
+
+from dependency_injector import containers, providers, providers as pv
 
 from src.domain.factories.claims import ClaimsFactory
-from src.domain.policies.password import PasswordPolicy
+from src.domain.policies.password import (
+    PasswordContainLowercasePolicy,
+    PasswordContainUpperacacePolicy,
+    PasswordMaxLengthPolicy,
+    PasswordMinLengthPolicy,
+    PasswordPolicy,
+    PasswordPolicySuite,
+)
 from src.domain.value_objects.token import TokenLifetime, TokenRealm, TokenSpecification
 
 from src.infra.config import Settings
@@ -13,8 +22,31 @@ from src.infra.orm.session import make_async_session_factory, make_engine
 from src.application import LoginService, RegisterService, SqlAlchemyUoW
 
 
-class AuthContainer(containers.DeclarativeContainer):
+@final
+class UOWContainer(containers.DeclarativeContainer):
     config = providers.Configuration(pydantic_settings=[Settings()])  # type: ignore [call-arg]
+
+    engine = providers.Singleton(
+        make_engine,
+        url=config.database_url.required(),
+        echo=config.debug,
+    )
+    session_factory = pv.Singleton(
+        make_async_session_factory,
+        engine=engine,
+    )
+
+    uow = pv.Factory(
+        SqlAlchemyUoW,
+        session_factory=session_factory,
+    )
+
+
+@final
+class AuthContainer(containers.DeclarativeContainer):
+    config = providers.Configuration(
+        pydantic_settings=[Settings()],  # type: ignore [call-arg]
+    )
 
     engine = providers.Singleton(
         make_engine,
@@ -82,9 +114,19 @@ class AuthContainer(containers.DeclarativeContainer):
         require_symbol=False,
     )
 
+    password_policies_suite = providers.Singleton(
+        PasswordPolicySuite,
+        policies=[
+            PasswordContainLowercasePolicy(),
+            PasswordContainUpperacacePolicy(),
+            PasswordMinLengthPolicy(4),
+            PasswordMaxLengthPolicy(50),
+        ],
+    )
+
     register_service = providers.Factory(
         RegisterService,
         uow=uow,
         password_hasher=password_hasher,
-        password_policy=password_policy,
+        password_policies_suite=password_policies_suite,
     )

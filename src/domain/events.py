@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 
 from pydantic import BaseModel, Field
 
+from src.domain.entities import Account
 from src.domain.value_objects import Email
 
 
@@ -13,11 +14,17 @@ class DomainEvent(BaseModel):
         return self.model_dump()
 
 
-class UserRegistered(DomainEvent):
-    user_id: str
+class AccountRegistered(DomainEvent):
+    email: Email
+
+    @classmethod
+    def from_account(cls, account: Account) -> 'AccountRegistered':
+        return cls(email=account.email)
+
+
+class AccountAuthorized(DomainEvent):
     email: Email
 
 
-class UserAuthorized(DomainEvent):
-    user_id: str
+class AccountForgotPassword(DomainEvent):
     email: Email
