@@ -5,19 +5,15 @@ use cases in isolation.
 """
 
 from typing import Any
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock
 from uuid import uuid4
 
 import pytest
 
 from src.domain.entities import Account
 from src.domain.events import DomainEvent
-from src.domain.policies.password import PasswordPolicySuite
 from src.domain.ports import (
     AccountRepository,
-    DomainEventPublisher,
-    JwtService,
-    PasswordHasher,
 )
 from src.domain.value_objects import (
     AccessToken,
@@ -26,8 +22,6 @@ from src.domain.value_objects import (
     PasswordHash,
     RefreshToken,
 )
-
-from src.application.uow import UnitOfWork
 
 
 class MockAccountRepository:

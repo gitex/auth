@@ -13,7 +13,7 @@ T = TypeVar('T')
 
 class Specification(Protocol[T]):
     """Base specification interface.
-    
+
     A specification encapsulates a business rule that can be checked
     against a candidate object. Specifications can be combined using
     logical operators to create complex rules.
@@ -22,10 +22,10 @@ class Specification(Protocol[T]):
     @abstractmethod
     def is_satisfied_by(self, candidate: T) -> bool:
         """Check if candidate satisfies this specification.
-        
+
         Args:
             candidate: Object to check against specification
-            
+
         Returns:
             True if candidate satisfies specification, False otherwise
         """
@@ -33,10 +33,10 @@ class Specification(Protocol[T]):
 
     def and_(self, other: 'Specification[T]') -> 'Specification[T]':
         """Combine specifications with logical AND.
-        
+
         Args:
             other: Specification to combine with
-            
+
         Returns:
             New specification that is satisfied only if both are satisfied
         """
@@ -44,10 +44,10 @@ class Specification(Protocol[T]):
 
     def or_(self, other: 'Specification[T]') -> 'Specification[T]':
         """Combine specifications with logical OR.
-        
+
         Args:
             other: Specification to combine with
-            
+
         Returns:
             New specification that is satisfied if either is satisfied
         """
@@ -55,7 +55,7 @@ class Specification(Protocol[T]):
 
     def not_(self) -> 'Specification[T]':
         """Negate this specification.
-        
+
         Returns:
             New specification that is satisfied if this is not satisfied
         """

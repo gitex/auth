@@ -5,7 +5,8 @@ in a functional way without using exceptions for control flow.
 """
 
 from dataclasses import dataclass
-from typing import Callable, Generic, TypeVar
+from typing import Generic, TypeVar
+from collections.abc import Callable
 
 
 T = TypeVar('T')
@@ -16,7 +17,7 @@ U = TypeVar('U')
 @dataclass(frozen=True)
 class Result(Generic[T, E]):
     """Base Result type for functional error handling.
-    
+
     Result represents an operation that can either succeed with a value
     or fail with an error. This is a sealed type with two variants:
     Success and Failure.
@@ -32,7 +33,7 @@ class Result(Generic[T, E]):
 
     def unwrap(self) -> T:
         """Get value or raise if Failure.
-        
+
         Raises:
             ValueError: If result is Failure
         """
@@ -49,7 +50,7 @@ class Result(Generic[T, E]):
 
     def map(self, f: Callable[[T], U]) -> 'Result[U, E]':
         """Transform the success value using function f.
-        
+
         If Result is Success, applies f to value and returns Success(f(value)).
         If Result is Failure, returns Failure unchanged.
         """
@@ -59,7 +60,7 @@ class Result(Generic[T, E]):
 
     def map_error(self, f: Callable[[E], U]) -> 'Result[T, U]':
         """Transform the error value using function f.
-        
+
         If Result is Failure, applies f to error and returns Failure(f(error)).
         If Result is Success, returns Success unchanged.
         """
@@ -69,7 +70,7 @@ class Result(Generic[T, E]):
 
     def and_then(self, f: Callable[[T], 'Result[U, E]']) -> 'Result[U, E]':
         """Chain operations that return Result.
-        
+
         If Result is Success, applies f to value and returns its Result.
         If Result is Failure, returns Failure unchanged.
         This is also known as flatMap or bind in functional programming.

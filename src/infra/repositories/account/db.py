@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 @final
 class DbAccountRepositoryImpl(AccountRepository):
     """Database implementation of AccountRepository using SQLAlchemy.
-    
+
     This implementation provides persistence for Account aggregate roots
     using PostgreSQL database through SQLAlchemy async ORM.
     """
@@ -31,10 +31,10 @@ class DbAccountRepositoryImpl(AccountRepository):
     @override
     async def get_by_email(self, email: Email) -> Account | None:
         """Retrieve account by email address.
-        
+
         Args:
             email: Email address to search for
-            
+
         Returns:
             Account if found, None otherwise
         """
@@ -54,10 +54,10 @@ class DbAccountRepositoryImpl(AccountRepository):
     @override
     async def get_by_id(self, account_id: UUID) -> Account | None:
         """Retrieve account by unique identifier.
-        
+
         Args:
             account_id: UUID of the account
-            
+
         Returns:
             Account if found, None otherwise
         """
@@ -74,10 +74,10 @@ class DbAccountRepositoryImpl(AccountRepository):
     @override
     async def create(self, account: Account) -> Account:
         """Create a new account.
-        
+
         Args:
             account: Account to create
-            
+
         Returns:
             Created account with assigned identifier
         """
@@ -91,17 +91,17 @@ class DbAccountRepositoryImpl(AccountRepository):
 
     async def exists(self, email: Email) -> bool:
         """Check if account with given email exists.
-        
+
         Args:
             email: Email address to check
-            
+
         Returns:
             True if account exists, False otherwise
         """
         logger.debug('Checking if account exists for email: %s', email.value)
-        stmt = select(
-            exists().where(AccountModel.email == email.value)
-        ).select_from(AccountModel)
+        stmt = select(exists().where(AccountModel.email == email.value)).select_from(
+            AccountModel
+        )
         result = await self.session.execute(stmt)
         exists_result = result.scalar()
         logger.debug('Account exists for %s: %s', email.value, exists_result)
@@ -109,14 +109,14 @@ class DbAccountRepositoryImpl(AccountRepository):
 
     async def find_by_specification(self, spec: Specification[Account]) -> list[Account]:
         """Find accounts matching a specification.
-        
+
         This method fetches all accounts and filters them in memory using
         the specification. For better performance with large datasets,
         consider implementing specification-to-SQL translation.
-        
+
         Args:
             spec: Specification to match accounts against
-            
+
         Returns:
             List of accounts satisfying the specification
         """

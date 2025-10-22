@@ -1,9 +1,13 @@
 import typing as tp
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
 from src.domain.value_objects import Email
+
+if TYPE_CHECKING:
+    from src.domain.entities import Account
 
 
 class DomainEvent(BaseModel):
@@ -17,9 +21,7 @@ class AccountRegistered(DomainEvent):
     email: Email
 
     @classmethod
-    def from_account(cls, account: 'Account') -> 'AccountRegistered':
-        from src.domain.entities import Account
-
+    def from_account(cls, account: Account) -> 'AccountRegistered':
         return cls(email=account.email)
 
 
