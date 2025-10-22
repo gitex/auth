@@ -3,7 +3,6 @@ from datetime import UTC, datetime
 
 from pydantic import BaseModel, Field
 
-from src.domain.entities import Account
 from src.domain.value_objects import Email
 
 
@@ -18,7 +17,9 @@ class AccountRegistered(DomainEvent):
     email: Email
 
     @classmethod
-    def from_account(cls, account: Account) -> 'AccountRegistered':
+    def from_account(cls, account: 'Account') -> 'AccountRegistered':
+        from src.domain.entities import Account
+
         return cls(email=account.email)
 
 
@@ -27,4 +28,22 @@ class AccountAuthorized(DomainEvent):
 
 
 class AccountForgotPassword(DomainEvent):
+    email: Email
+
+
+class AccountPasswordChanged(DomainEvent):
+    """Domain event emitted when account password is changed."""
+
+    email: Email
+
+
+class AccountActivated(DomainEvent):
+    """Domain event emitted when account is activated."""
+
+    email: Email
+
+
+class AccountDeactivated(DomainEvent):
+    """Domain event emitted when account is deactivated."""
+
     email: Email
