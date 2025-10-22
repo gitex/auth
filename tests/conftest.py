@@ -156,3 +156,22 @@ async def account(password: str, container: AuthContainer, faker: Faker) -> Acco
         ),
     )
     return result.account
+
+
+# Additional fixtures for testing
+@pytest.fixture
+def sample_email(faker: Faker) -> Email:
+    """Sample Email value object."""
+    return Email(faker.email())
+
+
+@pytest.fixture
+def sample_password() -> Password:
+    """Sample Password value object."""
+    return Password('Test@Pass123')
+
+
+@pytest.fixture
+def sample_password_hash() -> str:
+    """Sample password hash string."""
+    return '$2b$12$abcdefghijklmnopqrstuvwxyz012345678901234567890'
