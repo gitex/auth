@@ -21,7 +21,7 @@ class AccountRegistered(DomainEvent):
     email: Email
 
     @classmethod
-    def from_account(cls, account: Account) -> 'AccountRegistered':
+    def from_account(cls, account: 'Account') -> 'AccountRegistered':
         return cls(email=account.email)
 
 
