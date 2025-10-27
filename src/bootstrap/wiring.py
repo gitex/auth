@@ -5,7 +5,7 @@ from dependency_injector import containers, providers, providers as pv
 from src.domain.factories.claims import ClaimsFactory
 from src.domain.policies.password import (
     PasswordContainLowercasePolicy,
-    PasswordContainUpperacacePolicy,
+    PasswordContainUppercasePolicy,
     PasswordMaxLengthPolicy,
     PasswordMinLengthPolicy,
     PasswordPolicy,
@@ -118,7 +118,7 @@ class AuthContainer(containers.DeclarativeContainer):
         PasswordPolicySuite,
         policies=[
             PasswordContainLowercasePolicy(),
-            PasswordContainUpperacacePolicy(),
+            PasswordContainUppercasePolicy(),
             PasswordMinLengthPolicy(4),
             PasswordMaxLengthPolicy(50),
         ],
