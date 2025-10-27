@@ -111,7 +111,7 @@ class PasswordNotInBlacklistPolicy(PasswordPolicy):
 
     @override
     def validate(self, password: Password) -> bool:
-        return password.value in self._blacklist
+        return password.value not in self._blacklist
 
     @override
     def error_message(self) -> str:
