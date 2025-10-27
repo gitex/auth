@@ -45,7 +45,7 @@ class PasswordPolicySuite:
 
 
 @final
-class PasswordContainUpperacacePolicy(PasswordPolicy):
+class PasswordContainUppercasePolicy(PasswordPolicy):
     code: PasswordError = PasswordError.REQUIRE_UPPER
 
     @override
