@@ -79,11 +79,11 @@ class PasswordMinLengthPolicy(PasswordPolicy):
 
     @override
     def validate(self, password: Password) -> bool:
-        return len(password) > self._min_length
+        return len(password) >= self._min_length
 
     @override
     def error_message(self) -> str:
-        return f'Password should be more than {self._min_length} symbols.'
+        return f'Password should be at least {self._min_length} symbols long.'
 
 
 @final
@@ -95,7 +95,7 @@ class PasswordMaxLengthPolicy(PasswordPolicy):
 
     @override
     def validate(self, password: Password) -> bool:
-        return len(password) < self._max_length
+        return len(password) <= self._max_length
 
     @override
     def error_message(self) -> str:
